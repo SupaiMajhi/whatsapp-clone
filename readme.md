@@ -1,0 +1,1 @@
+//in card define a method isChatOpen, depend on which detail chat component will be rendered
