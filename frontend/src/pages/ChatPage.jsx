@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ChatLeftSide from "../components/ChatLeftSide.jsx";
 import ChatBox from "./ChatBox.jsx";
 
@@ -7,7 +7,9 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
 
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
+  const scrollRef = useRef(null);
 
+  //socket
   useEffect(() => {
     const connection = new WebSocket('ws://localhost:8080');
 
@@ -29,8 +31,17 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
         connection.close();
       }
     }
-  }, [])
+  }, []);
 
+  //ref
+  useEffect(() => {
+    if(scrollRef.current){
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth"
+      });
+    }
+  }, [ messages ]);
 
   return (
     <div className="flex w-full h-full">
@@ -46,6 +57,7 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
             chatPartner={chatPartner}
             setMessages={setMessages}
             messages={messages}
+            scrollRef={scrollRef}
           />
         )}
       </div>

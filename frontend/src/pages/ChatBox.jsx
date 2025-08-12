@@ -5,7 +5,7 @@ import MainContent from "../components/MainContent.jsx";
 //store
 import useMessageStore from "../store/useMessageStore.js";
 
-const ChatBox = ({ chatPartner, messages, setMessages }) => {
+const ChatBox = ({ chatPartner, messages, setMessages, scrollRef }) => {
 
   const isLoading = useMessageStore((state) => state.isLoading);
   const PrevChats = useMessageStore((state) => state.PrevChats);
@@ -25,6 +25,7 @@ const ChatBox = ({ chatPartner, messages, setMessages }) => {
         <MainContent
           messages={messages}
           chatPartner={chatPartner}
+          scrollRef={scrollRef}
         />
       </div>
       <div className="sticky z-10 bottom-3 w-full h-[calc(100%-93%)] px-2 mx-auto">

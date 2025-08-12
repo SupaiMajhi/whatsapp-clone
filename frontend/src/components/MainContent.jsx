@@ -1,8 +1,11 @@
 
-const MainContent = ({ messages, chatPartner }) => {
+const MainContent = ({ messages, chatPartner, scrollRef }) => {
 
   return (
-    <div className="w-full h-full px-10 py-8 overflow-x-hidden overflow-y-auto">
+    <div 
+      className="w-full h-full px-10 py-8 overflow-x-hidden overflow-y-auto"
+      ref={scrollRef}  
+    >
       {messages.map((message) =>
         message.senderId !== chatPartner._id ? (
           <div className="chat chat-end" key={message._id}>
