@@ -9,7 +9,7 @@ const MainContent = ({ messages, chatPartner, scrollRef }) => {
       {messages.map((message) =>
         message.senderId !== chatPartner._id ? (
           <div className="chat chat-end" key={message._id}>
-            <div className="chat-bubble text-[0.78rem] font-normal">
+            <div className="chat-bubble text-[0.78rem] font-normal bg-green-900">
               {message.content}
             </div>
           </div>

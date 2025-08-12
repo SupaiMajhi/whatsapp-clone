@@ -38,7 +38,7 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
     if(scrollRef.current){
       scrollRef.current.scrollTo({
         top: scrollRef.current.scrollHeight,
-        behavior: "smooth"
+        behavior: "instant"
       });
     }
   }, [ messages ]);
