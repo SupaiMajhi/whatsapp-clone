@@ -48,7 +48,7 @@ const InputBox = ({ chatPartner, setMessages }) => {
             <SendSvg />
           </Button>
         ) : (
-          <Button className="p-2 cursor-pointer hover:rounded-full hover:bg-green-600">
+          <Button className="p-2 cursor-pointer hover:rounded-full hover:bg-green-500">
             <MicSvg />
           </Button>
         )}

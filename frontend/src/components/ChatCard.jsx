@@ -11,7 +11,7 @@ const ChatCard = ({ chat, setIsChatSelected, setChatPartner }) => {
 
   const handleOnClick = async () => {
     setIsChatSelected(true);
-    await getPrevChats(chat._id);
+    getPrevChats(chat._id);
     setChatPartner(chat);
   }
 

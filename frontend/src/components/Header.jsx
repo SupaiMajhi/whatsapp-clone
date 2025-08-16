@@ -2,8 +2,8 @@ import SearchSvg from '../svg/SearchSvg';
 import MenuSvg from '../svg/MenuSvg';
 import DefaultAvatar from './DefaultAvatar';
 import Button from './Button';
-
-const Header = ({ chatPartner }) => {
+import { formatDate } from '../util/util.js';
+const Header = ({ chatPartner, status }) => {
   
   return (
     <div className='w-full h-full flex justify-between items-center px-3 py-1'>
@@ -11,7 +11,15 @@ const Header = ({ chatPartner }) => {
             <DefaultAvatar className='w-10 h-10' />
             <div className='flex flex-col'>
                 <h2 className='text-[0.9rem] font-semibold'>{chatPartner?.chatPartnerInfo.username}</h2>
-                <p className='text-[0.8rem] font-light text-neutral-400'>last seen today 10.42 pm</p>
+
+                { status?.isOnline ? (
+                  <p className='text-[0.8rem] font-lighet text-neutral-400'>online</p>
+                ) 
+                :
+                (
+                  <p className='text-[0.8rem] font-lighet text-neutral-400'>last seen today at {formatDate(status?.lastSeen)}</p>
+                )
+                }
             </div>
         </div>
         <div className='flex justify-center items-center gap-3 p-2'>

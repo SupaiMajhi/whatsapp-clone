@@ -8,7 +8,7 @@ dotenv.config();
 import authRouter from "./routes/auth.route.js";
 import msgRouter from "./routes/message.route.js";
 import userRouter from "./routes/user.route.js";
-import { authMiddleware } from "./util/middleware.js";
+import { authMiddleware } from "./middleware/middleware.js";
 
 mongoose
   .connect(process.env.MONGODB_URL)
@@ -18,7 +18,7 @@ mongoose
 //middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: true,
     credentials: true,
   })
 );
