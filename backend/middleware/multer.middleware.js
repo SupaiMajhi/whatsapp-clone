@@ -1,23 +1,22 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { log } from "console";
 
 //todo:insure the public/temp folder exists??
 
+const uploadDir = path.join(process.cwd(), 'public/temp');
+if(!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 //configure disk storage
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        log(req);
-        log(file);
-        cb(null, './public/temp');
+        cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
-        log(req)
-        log(file)
         const ext = path.extname(file.originalname);
-        const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1e9) + ext
+        const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1e9) + ext;
         cb(null, uniqueName);
     }
 })
@@ -28,7 +27,7 @@ function fileFilter(req, file, cb){
     if(allowed.includes(file.mimetype)){
         cb(null, true);
     }else{
-        cb(new Error('Invalid file type', false));
+        cb(new Error('Invalid file type'), false);
     }
 }
 

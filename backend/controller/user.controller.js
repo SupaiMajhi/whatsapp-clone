@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import { onlineUsers } from "../socket.js";
 import uploadOnCloudinary from "../util/cloudinary.js";
+import { v2 as cloudinary } from "cloudinary";
 
 export const getStatusHandler = async (req, res) => {
   try {
@@ -26,19 +27,45 @@ export const getAllUserHandler = async (req, res) => {
   }
 }
 
-export const uploadAvatarHandler = async (req, res) => {
+// export const uploadAvatarHandler = async (req, res) => {
+//   try {
+//     if(!req.file) return res.status(400).json({ msgType: 'error', message: 'No photo provided' });
+
+//     const result = await uploadOnCloudinary(req.file.path);
+//     const uploadResult = await User.find
+//     return res.status(200).json({ msgType: 'success', message: 'uploaded successfully', data: result.url });   
+//   } catch (error) {
+//     return res.status(500).json({ msgType: "error", message: `uploadAvatarHandler server error ${error.message}`});
+//   }
+// }
+
+
+export const updateAvatarHandler = async (req, res) => {
+  if(!req.file) return res.status(400).json({ msgType: "error", message: 'provide a photo' });
   try {
-    if(!req.file) return res.status(400).json({ msgType: 'error', message: 'No file uploaded' });
-
-    //upload to cloudinary
-    const result = await uploadOnCloudinary(req.file.path);
-    console.log(result);
-    return;
-    //todo:remove file from disk
-
-    //send url
-
+    const uploadResult = await uploadOnCloudinary(req.file.path);
+    console.log('upload result', uploadResult);
+    const updateResponse = await User.findByIdAndUpdate(req.user.id, { profilePic: uploadResult }, {returnDocument: 'after'});
+    console.log('updateResponse', updateResponse);
+    return res.status(200).json({ msgType: 'success', message: 'updated successfully', data: updateResponse });
   } catch (error) {
-    return res.status(500).json({ msgType: "error", message: `getAllUserHandler server error ${error.message}`}); 
+    return res.status(500).json({ msgType: "error", message: `updateAvatarHandler server error ${error.message}`});
+  }
+}
+
+
+export const deleteAvatarHandler = async (req, res) => {
+  if(!req.file) return res.status(400).json({ msgType: "error", message: 'upload a photo first' });
+  try {
+    const user = await User.findById(req.user.id);
+    if(!user || !user.profilePic) return res.status(401).json({ msgType: "error", message: 'unauthorized or has no profile' });
+
+    //destroy the file from the cloudinary
+    await cloudinary.uploader.destroy(user.profilePic.public_id);
+    user.profilePic = null;
+    await user.save();
+    return res.status(200).json({ msgType: 'success', message: 'deleted successfully', data: user.profilePic });
+  } catch (error) {
+    return res.status(500).json({ msgType: "error", message: `updateAvatarHandler server error ${error.message}`});
   }
 }
