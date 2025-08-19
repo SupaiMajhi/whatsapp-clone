@@ -16,3 +16,39 @@
 @utility hover-effect{
     @apply p-2 hover:bg-darkSlateGray hover:cursor-pointer;
 }
+
+@layer utilities{
+    .h1 {
+        @apply text-[1.2rem] font-medium text-white;       
+    }
+
+    .large-text{
+        @apply text-3xl font-extralight text-white;
+    }
+
+    .light-title{
+        @apply text-[0.9rem] font-normal text-neutral-400;
+    }
+}
+
+@layer components {
+    .center{
+        @apply w-full h-full flex justify-center items-center;
+    }
+
+    .page-container{
+        @apply flex w-full h-full;
+    }
+
+    .left-side {
+        @apply w-[31%] h-full bg-customBlack border-r border-r-stone-600;
+    }
+
+    .right-side {
+        @apply w-[calc(100%-31%)] bg-customBlack;
+    }
+
+    .left-side-container{
+        @apply w-full h-full px-6 py-6 flex flex-col;
+    }
+}

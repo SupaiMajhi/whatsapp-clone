@@ -13,7 +13,7 @@ const ChatLeftSide = ({ setIsChatSelected, setChatPartner }) => {
   const prevChatList = useMessageStore((state) => state.prevChatList);
 
   return (
-      <div className="w-full h-full flex flex-col relative border-r border-r-zinc-800 bg-customBlack">
+      <div className="w-full h-full flex flex-col relative">
         <div className="sticky p-3">
           <div className="w-full flex justify-between items-center" >
             <div>

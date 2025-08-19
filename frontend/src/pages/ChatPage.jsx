@@ -54,14 +54,14 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
   }, [ messages ]);
 
   return (
-    <div className="flex w-full h-full">
-      <div className="w-[30%] h-full">
+    <div className="page-container">
+      <div className="left-side">
         <ChatLeftSide 
           setIsChatSelected={setIsChatSelected}
           setChatPartner={setChatPartner}
         />
       </div>
-      <div className="w-[calc(100%-30%)]">
+      <div className="right-side">
         { isChatSelected && (
           <ChatBox
             chatPartner={chatPartner}
