@@ -51,6 +51,20 @@ export const signUpHandler = async (req, res) => {
     }
 }
 
+export const logoutHandler = async (req, res) => {
+    try {
+        res.cookie('token', '',{
+            maxAge: 0,
+            httpOnly: true,
+            secure: false,
+            sameSite: "strict"
+        });
+        return res.status(200).json({ 'msgType': 'success', 'message': 'Logout Successfully'});
+    } catch (error) {
+        return res.status(500).json({ 'msgType': 'error', 'message': `Internal server error LogoutHandler ${error.message}`});
+    }
+}
+
 export const checkAuthHandler = (req, res) => {
     return res.status(200).json({"msgType": "success", "data": req.user });
 }
