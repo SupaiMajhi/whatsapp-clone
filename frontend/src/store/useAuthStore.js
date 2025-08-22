@@ -36,7 +36,13 @@ const useAuthStore = create((set) => ({
             set({ isLoading: false });
             set({ isAuthenticated: null });
         }
-    }
+    },
+
+    updateProfile: (newData) => set((state) => ({
+        isAuthenticated: { ...state.isAuthenticated, profilePic: newData }
+    })),
+
+    
 }));
 
 export default useAuthStore;

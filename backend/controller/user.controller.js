@@ -27,27 +27,12 @@ export const getAllUserHandler = async (req, res) => {
   }
 }
 
-// export const uploadAvatarHandler = async (req, res) => {
-//   try {
-//     if(!req.file) return res.status(400).json({ msgType: 'error', message: 'No photo provided' });
-
-//     const result = await uploadOnCloudinary(req.file.path);
-//     const uploadResult = await User.find
-//     return res.status(200).json({ msgType: 'success', message: 'uploaded successfully', data: result.url });   
-//   } catch (error) {
-//     return res.status(500).json({ msgType: "error", message: `uploadAvatarHandler server error ${error.message}`});
-//   }
-// }
-
-
 export const updateAvatarHandler = async (req, res) => {
   if(!req.file) return res.status(400).json({ msgType: "error", message: 'provide a photo' });
   try {
     const uploadResult = await uploadOnCloudinary(req.file.path);
-    console.log('upload result', uploadResult);
     const updateResponse = await User.findByIdAndUpdate(req.user.id, { profilePic: uploadResult }, {returnDocument: 'after'});
-    console.log('updateResponse', updateResponse);
-    return res.status(200).json({ msgType: 'success', message: 'updated successfully', data: updateResponse });
+    return res.status(200).json({ msgType: 'success', message: 'updated successfully', data: updateResponse.profilePic });
   } catch (error) {
     return res.status(500).json({ msgType: "error", message: `updateAvatarHandler server error ${error.message}`});
   }

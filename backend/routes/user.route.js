@@ -6,7 +6,7 @@ const router = Router();
 
 router.get("/status/:userId", getStatusHandler);
 router.get('/all', getAllUserHandler);
-router.put('/update/avatar', upload.single('avatar'), updateAvatarHandler);
-router.delete('/delete/avatar', deleteAvatarHandler)
+router.put('/update/profile', upload.single('avatar'), updateAvatarHandler);
+router.delete('/delete/profile', deleteAvatarHandler)
 
 export default router;

@@ -3,23 +3,6 @@ import ProfilePageSvg from "../svg/ProfilePageSvg";
 
 const Profile = () => {
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if(!file){
-      alert('please provide a file');
-      return;
-    }
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-    if(!allowedTypes.includes(file.type)){
-      alert('provide a valid format');
-      return;
-    }
-    if(file.size > 5 * 1024 * 1024){
-      alert('please provide a small file');
-      return;
-    }
-  }
-
 
   return (
     <div className='page-container'>

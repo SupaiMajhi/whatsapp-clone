@@ -7,7 +7,6 @@ import useMessageStore from "../store/useMessageStore.js";
 
 const ChatCard = ({ chat, setIsChatSelected, setChatPartner }) => {
 
-  console.log(chat)
   const getPrevChats = useMessageStore((state) => state.getPrevChats);
 
   const handleOnClick = async () => {

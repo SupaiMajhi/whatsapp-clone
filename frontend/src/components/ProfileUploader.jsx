@@ -1,10 +1,16 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Camera } from 'lucide-react';
+import useUserStore from '../store/useUserStore.js';
+import useAuthStore from '../store/useAuthStore.js';
 
 export default function ProfilePhotoUpload() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const fileInputRef = useRef(null);
+
+  const handleSubmit = useUserStore((state) => state.handleSubmit);
+  const updateProfile = useAuthStore((state) => state.updateProfile);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const handleClick = () => {
     fileInputRef.current?.click();
@@ -24,13 +30,11 @@ export default function ProfilePhotoUpload() {
     }
   };
 
-  const handleRemovePhoto = () => {
-    setSelectedImage(null);
-    setPreviewUrl(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
+  const handleOnSubmit = async () => {
+    const newData = await handleSubmit(selectedImage);
+    updateProfile(newData);
+  }
+
 
   return (
     <div className="flex flex-col items-center justify-center p-8">
@@ -44,7 +48,7 @@ export default function ProfilePhotoUpload() {
           >
             {previewUrl ? (
               <img
-                src={previewUrl}
+                src={isAuthenticated?.profilePic?.url}
                 alt="Profile preview"
                 className="w-full h-full object-cover"
               />
@@ -70,39 +74,10 @@ export default function ProfilePhotoUpload() {
             onChange={handleFileChange}
             className="hidden"
           />
+          { selectedImage && (
+            <button onClick={handleOnSubmit} className='text-[0.8rem] mt-4 bg-green-600 text-white p-2 rounded-md cursor-pointer hover:bg-green-800'>Upload</button>
+          )}
         </div>
-
-        {/* File info and actions */}
-        {selectedImage && (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600 mb-2">
-              Selected: {selectedImage.name}
-            </p>
-            <p className="text-xs text-gray-500 mb-3">
-              Size: {(selectedImage.size / 1024).toFixed(1)} KB
-            </p>
-            <div className="flex gap-2 justify-center">
-              <button
-                onClick={handleClick}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200 text-sm"
-              >
-                Change Photo
-              </button>
-              <button
-                onClick={handleRemovePhoto}
-                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200 text-sm"
-              >
-                Remove
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* {!selectedImage && (
-          <p className="mt-4 text-gray-500 text-sm">
-            Click the circle above to upload a profile photo
-          </p>
-        )} */}
       </div>
     </div>
   );

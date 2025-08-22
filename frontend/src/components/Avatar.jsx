@@ -1,4 +1,3 @@
-import useAuthStore from "../store/useAuthStore.js";
 
 const Avatar = ({ className='', ...props}) => {
   
