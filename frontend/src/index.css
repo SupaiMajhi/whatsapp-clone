@@ -13,11 +13,12 @@
     --color-customBlack: #161717;
 }
 
-@utility hover-effect{
-    @apply p-2 hover:bg-darkSlateGray hover:cursor-pointer;
-}
 
 @layer utilities{
+    .hover-effect{
+        @apply p-2 hover:bg-darkSlateGray hover:cursor-pointer;
+    }
+        
     .h1 {
         @apply text-[1.2rem] font-medium text-white;       
     }
@@ -27,7 +28,11 @@
     }
 
     .light-title{
-        @apply text-[0.9rem] font-normal text-neutral-400;
+        @apply text-[0.8rem] font-medium text-neutral-400;
+    }
+
+    .flex-box{
+        @apply w-full flex justify-center items-center gap-8; 
     }
 }
 

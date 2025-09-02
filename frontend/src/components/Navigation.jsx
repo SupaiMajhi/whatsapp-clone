@@ -7,7 +7,7 @@ import ProfileSvg from "../svg/ProfileSvg";
 const Navigation = () => {
   return (
     <div className="w-full h-full flex flex-col justify-between items-center p-2 bg-offBlack">
-        <div className="flex flex-col justify-center items-center gap-5">
+        <div className="flex flex-col justify-center items-center gap-2">
             <NavLink to={'/'} className='hover-effect hover:rounded-full'>
                 <ChatSvg />
             </NavLink>
@@ -15,7 +15,7 @@ const Navigation = () => {
                 <StatusSvg />
             </NavLink>
         </div>
-        <div className="flex flex-col justify-center items-center gap-5">
+        <div className="flex flex-col justify-center items-center gap-2">
             <NavLink to={'/settings'} className='hover-effect hover:rounded-full'>
                 <SettingSvg />
             </NavLink>

@@ -6,16 +6,26 @@ import Button from './Button';
 import SendSvg from "../svg/SendSvg";
 import useMessageStore from "../store/useMessageStore.js";
 
-const InputBox = ({ chatPartner, setMessages }) => {
+const InputBox = ({ chatPartner, setMessages, socket, setIsTyping }) => {
 
   const [message, setMessage] = useState('');
   const sendNewMsg = useMessageStore((state) => state.sendNewMsg);
 
+  const handleOnChange = (e) => {
+    setMessage(e.target.value);
+    socket.send(JSON.stringify({
+      type: 'typing',
+      content: {
+        id: chatPartner._id
+      }
+    }));
+  }
 
   const handleOnClick = async () => {
     const response = await sendNewMsg(chatPartner._id, message);
     setMessages((prev) => [...prev, response.data]);
     setMessage('');
+    setIsTyping(false);
   }
 
   return (
@@ -36,7 +46,7 @@ const InputBox = ({ chatPartner, setMessages }) => {
           placeholder="Type a message"
           className="w-full h-full border-none outline-none text-[0.9rem] font-normal"
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={handleOnChange}
         />
       </div>
       <div className="flex justify-center items-center">

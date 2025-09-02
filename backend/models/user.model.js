@@ -6,8 +6,12 @@ const userSchema = new Schema({
         unique: true,
         required: true,
     },
-    name: {
+    username: {
+        type: String
+    },
+    password: {
         type: String,
+        require: true,
     },
     profilePic: {
         type: Object,
@@ -17,7 +21,7 @@ const userSchema = new Schema({
         type: Date,
         default: Date.now()
     }
-});
+}, { timestamps: true });
 
 const User = model('User', userSchema);
 

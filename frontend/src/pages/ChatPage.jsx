@@ -8,6 +8,7 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
 
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef(null);
   const setStatus = useUserStore((state) => state.setStatus);
 
@@ -31,6 +32,11 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
 
       if(data.type === 'USER_OFFLINE'){
         setStatus(data.content);
+      }
+
+      if(data.type === 'typing'){
+        setIsTyping(true);
+        //todo: isTyping is never false again, so typing effect will be shown forever. for now it will false when msg will be send, but there is a problem if suppose msg never sent then the typing effect will be shown forever.
       }
     }
 
@@ -68,6 +74,9 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
             setMessages={setMessages}
             messages={messages}
             scrollRef={scrollRef}
+            socket={socket}
+            isTyping={isTyping}
+            setIsTyping={setIsTyping}
           />
         )}
       </div>

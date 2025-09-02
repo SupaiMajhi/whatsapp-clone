@@ -12,7 +12,7 @@ const otpSchema = new Schema({
     otpExpiry: {
         type: Date
     }
-});
+}, { timestamps: true });
 
 const Otp = model('Otp', otpSchema);
 
