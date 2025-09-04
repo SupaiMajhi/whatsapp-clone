@@ -5,6 +5,7 @@ const useUserStore = create((set) => ({
     isLoading: false,
     socket: null,
     status: null,
+    users: [],
 
     getUserStatus: async (userId) => {
         try {
@@ -52,6 +53,20 @@ const useUserStore = create((set) => ({
         }
         );
         return response.data.data;
+    },
+
+    getAllUsers: async () => {
+        try {
+            set({ isLoading: true });
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/user/get-all-users`, {
+                withCredentials: true
+            });
+            set({ isLoading: false });
+            set({ users: response.data.data });
+        } catch (error) {
+            set({ isLoading: false });
+            set({ users: [] });
+        }
     }
 }));
 
