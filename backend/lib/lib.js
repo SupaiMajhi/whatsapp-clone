@@ -53,12 +53,11 @@ export const sendViaSocket = (id, msg) => {
     let socket = clients.get(id);
     if(socket && socket.readyState === WebSocket.OPEN){
         socket.send(JSON.stringify({
-            type: 'new_msg',
+            type: 'NEW_MSG',
             content: {
                 data: msg
             }
         }));
     }
-    //todo:else wait until the socket open and queue all the message for sending
     return;
 }

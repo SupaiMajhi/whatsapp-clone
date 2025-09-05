@@ -20,21 +20,22 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
       console.log('connection established');
     }
 
-    connection.onmessage = (message) => {
-      const data = JSON.parse(message.data);
-      if(data.type === 'NEW_MSG'){
+    connection.onmessage = (data) => {
+      const message = JSON.parse(data.data);
+      
+      if(message.type === 'NEW_MSG'){
         setMessages((prev) => [ ...prev, data.content ]);
       }
       
-      if(data.type === 'USER_ONLINE'){
+      if(message.type === 'USER_ONLINE'){
         setStatus(data.content);
       }
 
-      if(data.type === 'USER_OFFLINE'){
+      if(message.type === 'USER_OFFLINE'){
         setStatus(data.content);
       }
 
-      if(data.type === 'typing'){
+      if(message.type === 'typing'){
         setIsTyping(true);
         //todo: isTyping is never false again, so typing effect will be shown forever. for now it will false when msg will be send, but there is a problem if suppose msg never sent then the typing effect will be shown forever.
       }

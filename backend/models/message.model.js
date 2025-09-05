@@ -17,8 +17,8 @@ const messageSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'delivered', 'seen', 'unseen'],
-        default: 'pending'
+        enum: ['sent', 'delivered', 'seen', 'unseen'],
+        default: 'sent'
     }
 }, { timestamps: true });
 

@@ -10,7 +10,6 @@ const authMiddleware = async (req, res, next) => {
         const isVerified = jwt.verify(token, process.env.JWT_SECRET_KEY);
         if (!isVerified) return errorResponse(res, 401, "unauthorized");
         const user = await User.findOne({ phone: isVerified });
-        console.log(user)
         if (!user) return errorResponse(res, 401, "unauthorized");
         req.user = user;
         next();

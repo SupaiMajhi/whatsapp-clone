@@ -6,7 +6,6 @@ export const sendMsgHandler = async (req, res) => {
     const senderId = req.user.id;
     const { receiverId } = req.params;
     const { content } = req.body;
-    console.log(senderId, receiverId, content)
     if(!senderId || !receiverId || !content)  return errorResponse(res, 400, 'something is wrong');
     try {
         const newMsg = new Message({
@@ -19,7 +18,6 @@ export const sendMsgHandler = async (req, res) => {
             //todo: send msg via websocket
             sendViaSocket(receiverId, savedMsg);
         }
-        //if user is offline send it while comes online
         return successfulResponse(res, 200, 'sent successfully.');
     } catch (error) {
         console.log('sendMsgHandler Error', error.message);
@@ -125,5 +123,16 @@ export const getChatListHandler = async (req, res) => {
     } catch (error) {
         console.log("getChatListHandler Error", error.message);
         return errorResponse(res, 500, "Internal server error");
+    }
+}
+
+
+export const fetchUndeliveredMessages = async (id) => {
+    try {
+        const messages = await Message.find({ $and: [ { receiverId: id }, { status: 'sent' }]});
+        return messages;
+    } catch (error) {
+        console.log("fetchUndeliveredMessages Error", error.message);
+        return [];
     }
 }

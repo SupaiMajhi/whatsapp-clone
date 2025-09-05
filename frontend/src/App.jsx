@@ -10,12 +10,12 @@ import ChatPage from "./pages/ChatPage.jsx";
 import useAuthStore from "./store/useAuthStore.js";
 import HomeLayout from "./pages/HomeLayout.jsx";
 
-// import useMessageStore from "./store/useMessageStore.js";
-
 function App() {
+
   const checkAuthentication = useAuthStore((state) => state.checkAuthentication);
   const [isChatSelected, setIsChatSelected] = useState(false);
   const [chatPartner, setChatPartner] = useState(null);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   
   useEffect(() => {
     checkAuthentication();
@@ -24,9 +24,9 @@ function App() {
   return (
     <div className="flex w-screen h-screen bg-black">
       <Routes>
-        {/* login */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<HomeLayout />}>
+        <Route path="/login" element={ isAuthenticated ? <Navigate to={'/'} /> : <Login /> } />
+        
+        <Route path="/" element={ isAuthenticated ? <HomeLayout /> : <Navigate to={'/login'} /> }>
           <Route index element={
             <ChatPage 
               setIsChatSelected={setIsChatSelected}

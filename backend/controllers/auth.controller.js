@@ -73,3 +73,13 @@ export const signupHandler = async (req, res) => {
         return errorResponse(res, 500, 'Internal server error.');
     }
 }
+
+
+export const checkAuthHandler = async (req, res) => {
+    try {
+        return successfulResponse(res, 200, 'user is authenticated.', req.user)
+    } catch (error) {
+        console.log('signupHandler error', error.message)
+        return errorResponse(res, 500, 'Internal server error.');
+    }
+}
