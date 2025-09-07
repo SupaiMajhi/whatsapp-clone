@@ -11,7 +11,6 @@ const useAuthStore = create((set) => ({
                 const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/auth/check-auth`, {
                     withCredentials: true
                 });
-                console.log(response.data.data)
                 set({ isLoading: false });
                 set({ isAuthenticated: response.data.data });
             } catch (error) {

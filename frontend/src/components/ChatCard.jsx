@@ -11,7 +11,7 @@ const ChatCard = ({ chat, setIsChatSelected, setChatPartner }) => {
 
   const handleOnClick = async () => {
     setIsChatSelected(true);
-    getPrevChats(chat._id);
+    getPrevChats(chat.otherUser._id);
     setChatPartner(chat);
   }
 
@@ -25,7 +25,7 @@ const ChatCard = ({ chat, setIsChatSelected, setChatPartner }) => {
         </div>
 
         <div className="w-[calc(100%-40%)] min-w-[200px] flex items-start flex-col gap-1">
-          <h2 className="text-[0.95rem] font-normal text-white">{chat.chatPartnerInfo.username}</h2>
+          <h2 className="text-[0.95rem] font-normal text-white">{chat.otherUser.username}</h2>
           <p className="text-[0.75rem] font-light text-gray-300">{chat.lastMessage.content}</p>
         </div>
 

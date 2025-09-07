@@ -18,7 +18,7 @@ export const sendMsgHandler = async (req, res) => {
             //todo: send msg via websocket
             sendViaSocket(receiverId, savedMsg);
         }
-        return successfulResponse(res, 200, 'sent successfully.');
+        return successfulResponse(res, 200, 'sent successfully.', savedMsg);
     } catch (error) {
         console.log('sendMsgHandler Error', error.message);
         return errorResponse(res, 500, 'Internal server error');
@@ -65,14 +65,14 @@ export const getAllMsgHandler = async (req, res) => {
 }
 
 export const getChatListHandler = async (req, res) => {
-    const userId = req.params.id;
+
     try {
         const chatList = await Message.aggregate([
             { 
                 $match: {
                     $or: [ 
-                        {senderId: mongoose.Types.ObjectId.createFromHexString(userId)},
-                        {receiverId: mongoose.Types.ObjectId.createFromHexString(userId)}
+                        {senderId: mongoose.Types.ObjectId.createFromHexString(req.user.id)},
+                        {receiverId: mongoose.Types.ObjectId.createFromHexString(req.user.id)}
                     ]
                 }
             },
@@ -95,7 +95,7 @@ export const getChatListHandler = async (req, res) => {
                 $addFields: {
                     otherUserId: {
                         $cond: [
-                            { $eq: ['$lastMessage.senderId', mongoose.Types.ObjectId.createFromHexString(userId)] },
+                            { $eq: ['$lastMessage.senderId', mongoose.Types.ObjectId.createFromHexString(req.user.id)] },
                             '$lastMessage.receiverId',
                             '$lastMessage.senderId'
                         ]
@@ -110,16 +110,17 @@ export const getChatListHandler = async (req, res) => {
                     as: 'otherUser'
                 }
             },
-            { $unwind: '$otherUsers' },
+            { $unwind: '$otherUser' },
             {
                 $project: {
                     lastMessage: 1,
+                    'otherUser._id': 1,
                     'otherUser.username': 1,
                     'otherUser.profilePic': 1
                 }
             }
         ]);
-        return res.json({chatList});
+        return successfulResponse(res, 200, 'success', chatList );
     } catch (error) {
         console.log("getChatListHandler Error", error.message);
         return errorResponse(res, 500, "Internal server error");
@@ -129,7 +130,7 @@ export const getChatListHandler = async (req, res) => {
 
 export const fetchUndeliveredMessages = async (id) => {
     try {
-        const messages = await Message.find({ $and: [ { receiverId: id }, { status: 'sent' }]});
+        const messages = await Message.find({ $and: [ { receiverId: id }, { isDelivered: false }]});
         return messages;
     } catch (error) {
         console.log("fetchUndeliveredMessages Error", error.message);

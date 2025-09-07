@@ -12,5 +12,5 @@ router.patch('/update-message/:id', updateMsgHandler);
 //get all message
 router.get('/get-all-message/:receiverId', getAllMsgHandler);
 //get prev message chat list
-router.get('/get-all-chatList/:id', getChatListHandler);
+router.get('/get-all-chatList', getChatListHandler);
 export default router;

@@ -10,9 +10,14 @@ import Avatar from "./Avatar";
 import useUserStore from "../store/useUserStore.js";
 import DefaultAvatar from "./DefaultAvatar.jsx";
 
-const NewChat = ({ isDotsClicked, setIsDotsClicked }) => {
+const NewChat = ({ isDotsClicked, setIsDotsClicked, setIsChatSelected, setChatPartner }) => {
 
   const users = useUserStore((state) => state.users);
+
+  const handleOnClick = (userObj) => {
+    setIsChatSelected(true);
+    setChatPartner(userObj);
+  }
 
   return (
     <div className={`w-full h-full relative left-side-container ${ isDotsClicked ? 'hidden-none' : 'hidden' } ${ isDotsClicked ? 'animate-slideIn' : 'animate-slideOut' }`}>
@@ -62,19 +67,24 @@ const NewChat = ({ isDotsClicked, setIsDotsClicked }) => {
         <div>
           {/**dyanamic rendering */}
           { users.map((user) => (
-            <Card className="min-h-[60px]">
-              <div>
-                { user?.profilePic?.url ? (
-                  <Avatar className="w-12" url={user?.profilePic?.url} />
-                ) : (
-                  <DefaultAvatar className="w-14" />
-                )}
-              </div>
-              <div className="flex flex-col gap-1">
-                <h1 className="font-medium text-[0.9rem]">{user.username}</h1>
-                <p className="font-normal text-[0.8rem] text-zinc-400">about them</p>
-              </div>
-            </Card>
+            <Button 
+              handleOnClick={() => handleOnClick(user)}
+              key={user._id}
+            >
+              <Card className="min-h-[60px]">
+                <div>
+                  { user?.profilePic?.url ? (
+                    <Avatar className="w-12" url={user?.profilePic?.url} />
+                  ) : (
+                    <DefaultAvatar className="w-14" />
+                  )}
+                </div>
+                <div className="flex flex-col gap-1">
+                  <h1 className="font-medium text-[0.9rem]">{user.username}</h1>
+                  <p className="font-normal text-[0.8rem] text-zinc-400">about them</p>
+                </div>
+              </Card>
+            </Button>
           ))}
         </div>
       </div>

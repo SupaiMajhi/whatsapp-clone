@@ -29,6 +29,8 @@ const ChatLeftSide = ({ setIsChatSelected, setChatPartner }) => {
       <NewChat
         isDotsClicked={isDotsClicked}
         setIsDotsClicked={setIsDotsClicked}
+        setIsChatSelected={setIsChatSelected}
+        setChatPartner={setChatPartner}
       />
       <div className={`${isDotsClicked ? 'hidden' : 'hidden-none'}`}>
         <div className="sticky p-3">

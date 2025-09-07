@@ -9,7 +9,7 @@ const useMessageStore = create((set) => ({
     getAllprevChatList: async () => {
         try {
             set({ isLoading: true });
-            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/message/chatList`, {
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/message/get-all-chatList`, {
                 withCredentials: true
             });
             set({ isLoading: false });
@@ -25,7 +25,7 @@ const useMessageStore = create((set) => ({
         try {
           set({ isLoading: true });
           const response = await axios.get(
-            `${import.meta.env.VITE_BASE_URL}/message/${chatPartnerId}`,
+            `${import.meta.env.VITE_BASE_URL}/message/get-all-message/${chatPartnerId}`,
             {
               withCredentials: true,
             }
@@ -42,12 +42,13 @@ const useMessageStore = create((set) => ({
     sendNewMsg: async (receiverId, content) => {
       try {
         set({ isLoading: true });
-        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/message/${receiverId}`, {
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/message/send-message/${receiverId}`, {
           content
         }, {
           withCredentials: true,
         });
         set({ isLoading: false });
+        console.log(response.data.data)
         return response.data;
       } catch (error) {
         console.log("sendNewMsg", error.message);

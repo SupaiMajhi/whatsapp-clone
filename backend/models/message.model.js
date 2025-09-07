@@ -7,18 +7,28 @@ const messageSchema = new Schema({
         required: true,
     },
     receiverId: {
-    type: mongoose.Types.ObjectId,
-    ref: 'User',
-    required: true,
+        type: mongoose.Types.ObjectId,
+        ref: 'User',
+        required: true,
     },
     content: {
         type: String,
         required: true,
     },
-    status: {
-        type: String,
-        enum: ['sent', 'delivered', 'seen', 'unseen'],
-        default: 'sent'
+    isSent: {
+        type: Boolean,
+        default: true,
+    },
+    isDelivered: {
+        type: Boolean,
+        default: false
+    },
+    isSeen: {
+        type: Boolean,
+        default: false,
+    },
+    readAt: {
+        type: Date
     }
 }, { timestamps: true });
 

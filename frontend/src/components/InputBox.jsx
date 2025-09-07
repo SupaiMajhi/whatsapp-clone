@@ -8,6 +8,7 @@ import useMessageStore from "../store/useMessageStore.js";
 
 const InputBox = ({ chatPartner, setMessages, socket, setIsTyping }) => {
 
+
   const [message, setMessage] = useState('');
   const sendNewMsg = useMessageStore((state) => state.sendNewMsg);
 
@@ -22,7 +23,7 @@ const InputBox = ({ chatPartner, setMessages, socket, setIsTyping }) => {
   }
 
   const handleOnClick = async () => {
-    const response = await sendNewMsg(chatPartner._id, message);
+    const response = await sendNewMsg(chatPartner.otherUser._id, message);
     setMessages((prev) => [...prev, response.data]);
     setMessage('');
     setIsTyping(false);

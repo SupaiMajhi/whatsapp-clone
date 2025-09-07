@@ -7,23 +7,18 @@ const MainContent = ({ messages, chatPartner, scrollRef, isTyping }) => {
       ref={scrollRef}
     >
       {messages.map((message) =>
-        message.senderId !== chatPartner._id ? (
+        message.senderId !== chatPartner.otherUser._id ? (
           <div className="chat chat-end" key={message._id}>
-            <div className="chat-bubble text-[0.78rem] font-normal bg-green-900">
+            <div className="chat-bubble text-[0.78rem] font-normal bg-green-800">
               {message.content}
             </div>
           </div>
         ) : (
-          <>
             <div className="chat chat-start" key={message._id}>
               <div className="chat-bubble text-[0.78rem] font-normal">
                 {message.content}
               </div>
-
-              {/* TYPING EFFECT */}
             </div>
-            {isTyping && <p>typing...</p>}
-          </>
         )
       )}
     </div>

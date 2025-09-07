@@ -10,7 +10,7 @@ const Header = ({ chatPartner, status }) => {
         <div className='w-[750px] flex justify-start items-center gap-3 cursor-pointer'>
             <DefaultAvatar className='w-10 h-10' />
             <div className='flex flex-col'>
-                <h2 className='text-[0.9rem] font-semibold'>{chatPartner?.chatPartnerInfo.username}</h2>
+                <h2 className='text-[0.9rem] font-semibold'>{chatPartner?.username}</h2>
 
                 { status?.isOnline ? (
                   <p className='text-[0.8rem] font-lighet text-neutral-400'>online</p>
