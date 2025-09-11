@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //routes
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/user', authMiddleware, userRouter)
+app.use('/api/v1/user', authMiddleware, userRouter);
 app.use('/api/v1/message', authMiddleware, messageRouter);
 
 setupWebSocketServer(server);

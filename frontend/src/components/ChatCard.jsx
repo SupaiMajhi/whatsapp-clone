@@ -3,16 +3,19 @@ import Avatar from "./Avatar";
 import Button from "./Button.jsx";
 //store
 import useMessageStore from "../store/useMessageStore.js";
+import useUserStore from "../store/useUserStore.js";
 
 
 const ChatCard = ({ chat, setIsChatSelected, setChatPartner }) => {
 
   const getPrevChats = useMessageStore((state) => state.getPrevChats);
+  const getUserStatus = useUserStore((state) => state.getUserStatus);
 
   const handleOnClick = async () => {
     setIsChatSelected(true);
     getPrevChats(chat.otherUser._id);
     setChatPartner(chat);
+    getUserStatus(chat?.otherUser?._id);
   }
 
   return (

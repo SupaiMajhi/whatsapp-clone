@@ -26,13 +26,13 @@ export const setupWebSocketServer = (server) => {
             }));
         }
 
-
+        //send when user comes online
         wss.clients.forEach((ws) => {
             if(ws.readyState === WebSocket.OPEN){
                 ws.send(JSON.stringify({
                     type: 'USER_ONLINE',
                     content: {
-                        online: onlineUser.has(id)
+                        isOnline: onlineUser.has(id)
                     }
                 }))
             }
@@ -124,7 +124,7 @@ export const setupWebSocketServer = (server) => {
                     ws.send(JSON.stringify({
                         type: 'USER_OFFLINE',
                         content: {
-                            online: onlineUser.has(id),
+                            isOnline: false,
                             lastSeen: new Date()
                         }
                     }))

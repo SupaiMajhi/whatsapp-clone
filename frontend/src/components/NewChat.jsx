@@ -70,6 +70,7 @@ const NewChat = ({ isDotsClicked, setIsDotsClicked, setIsChatSelected, setChatPa
             <Button 
               handleOnClick={() => handleOnClick(user)}
               key={user._id}
+              className="w-full"
             >
               <Card className="min-h-[60px]">
                 <div>

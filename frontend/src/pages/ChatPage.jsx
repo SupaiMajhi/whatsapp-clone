@@ -28,11 +28,11 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
       }
       
       if(message.type === 'USER_ONLINE'){
-        setStatus(data.content);
+        setStatus(message.content);
       }
 
       if(message.type === 'USER_OFFLINE'){
-        setStatus(data.content);
+        setStatus(message.content);
       }
 
       if(message.type === 'typing'){
