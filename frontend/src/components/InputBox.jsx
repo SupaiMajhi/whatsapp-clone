@@ -6,27 +6,19 @@ import Button from './Button';
 import SendSvg from "../svg/SendSvg";
 import useMessageStore from "../store/useMessageStore.js";
 
-const InputBox = ({ chatPartner, setMessages, socket, setIsTyping }) => {
-
+const InputBox = ({ chatPartner }) => {
 
   const [message, setMessage] = useState('');
   const sendNewMsg = useMessageStore((state) => state.sendNewMsg);
 
   const handleOnChange = (e) => {
     setMessage(e.target.value);
-    socket.send(JSON.stringify({
-      type: 'typing',
-      content: {
-        id: chatPartner._id
-      }
-    }));
   }
 
   const handleOnClick = async () => {
-    const response = await sendNewMsg(chatPartner.otherUser._id, message);
-    setMessages((prev) => [...prev, response.data]);
+    await sendNewMsg(chatPartner.otherUser._id, message);
     setMessage('');
-    setIsTyping(false);
+    //todo: send msg if enter key pressed
   }
 
   return (

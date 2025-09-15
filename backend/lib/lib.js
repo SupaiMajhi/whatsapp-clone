@@ -49,10 +49,21 @@ export const retrieveIdFromReq = async (req) => {
     return user.id;
 }
 
-export const sendViaSocket = (id, msg) => {
-    let socket = clients.get(id);
-    if(socket && socket.readyState === WebSocket.OPEN){
-        socket.send(JSON.stringify({
+export const sendMessageToSockets = (senderId, receiverId, msg) => {
+    const senderSocket = clients.get(senderId.toHexString());
+    const receiverSocket = clients.get(receiverId.toHexString());
+    
+    if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
+        senderSocket.send(JSON.stringify({
+            type: 'NEW_MSG',
+            content: {
+                data: msg
+            }
+        }));
+    }
+
+    if(receiverSocket && receiverSocket.readyState === WebSocket.OPEN){
+        receiverSocket.send(JSON.stringify({
             type: 'NEW_MSG',
             content: {
                 data: msg

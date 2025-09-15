@@ -48,8 +48,6 @@ const useMessageStore = create((set) => ({
           withCredentials: true,
         });
         set({ isLoading: false });
-        console.log(response.data.data)
-        return response.data;
       } catch (error) {
         console.log("sendNewMsg", error.message);
         set({ isLoading: false });

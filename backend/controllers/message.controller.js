@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { errorResponse, successfulResponse, sendViaSocket } from "../lib/lib.js";
+import { errorResponse, successfulResponse, sendMessageToSockets } from "../lib/lib.js";
 import Message from "../models/message.model.js";
 
 export const sendMsgHandler = async (req, res) => {
@@ -16,7 +16,7 @@ export const sendMsgHandler = async (req, res) => {
         const savedMsg = await newMsg.save();
         if(savedMsg){
             //todo: send msg via websocket
-            sendViaSocket(receiverId, savedMsg);
+            sendMessageToSockets(savedMsg.senderId, savedMsg.receiverId, savedMsg);
         }
         return successfulResponse(res, 200, 'sent successfully.', savedMsg);
     } catch (error) {

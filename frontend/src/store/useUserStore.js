@@ -22,7 +22,6 @@ const useUserStore = create((set) => ({
     },
 
     setStatus: (newData) => {
-        console.log(newData)
         set({ status: newData });
     },
 

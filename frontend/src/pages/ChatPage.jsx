@@ -24,7 +24,8 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
       const message = JSON.parse(data.data);
       
       if(message.type === 'NEW_MSG'){
-        setMessages((prev) => [ ...prev, data.content ]);
+        console.log('ran')
+        setMessages((prev) => [ ...prev, message.content.data ]);
       }
       
       if(message.type === 'USER_ONLINE'){

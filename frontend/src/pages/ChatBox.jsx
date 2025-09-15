@@ -4,9 +4,8 @@ import InputBox from "../components/InputBox.jsx";
 import MainContent from "../components/MainContent.jsx";
 //store
 import useMessageStore from "../store/useMessageStore.js";
-import useUserStore from "../store/useUserStore.js";
 
-const ChatBox = ({ chatPartner, messages, setMessages, scrollRef, socket, isTyping, setIsTyping }) => {
+const ChatBox = ({ chatPartner, messages, setMessages, scrollRef, socket, isTyping }) => {
 
   const isLoading = useMessageStore((state) => state.isLoading);
   const PrevChats = useMessageStore((state) => state.PrevChats);
@@ -31,9 +30,6 @@ const ChatBox = ({ chatPartner, messages, setMessages, scrollRef, socket, isTypi
       <div className="sticky z-10 bottom-3 w-full h-[calc(100%-93%)] px-2 mx-auto">
         <InputBox
           chatPartner={chatPartner}
-          setMessages={setMessages}
-          socket={socket}
-          setIsTyping={setIsTyping}
         />
       </div>
     </div>
