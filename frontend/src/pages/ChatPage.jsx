@@ -23,9 +23,15 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
     connection.onmessage = (data) => {
       const message = JSON.parse(data.data);
       
+      //only when user is online
       if(message.type === 'NEW_MSG'){
-        console.log('ran')
         setMessages((prev) => [ ...prev, message.content.data ]);
+        connection.send(JSON.stringify({
+          type: 'markAsDelivered',
+          content: {
+            data: message.content.data
+          }
+        }));
       }
       
       if(message.type === 'USER_ONLINE'){

@@ -25,6 +25,7 @@ const ChatBox = ({ chatPartner, messages, setMessages, scrollRef, socket, isTypi
           chatPartner={chatPartner}
           scrollRef={scrollRef}
           isTyping={isTyping}
+          socket={socket}
         />
       </div>
       <div className="sticky z-10 bottom-3 w-full h-[calc(100%-93%)] px-2 mx-auto">
