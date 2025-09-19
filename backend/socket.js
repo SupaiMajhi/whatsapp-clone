@@ -43,22 +43,19 @@ export const setupWebSocketServer = (server) => {
             const message = JSON.parse(event);
 
             if(message.type === 'markAsDelivered'){
-                if(Array.isArray(message.content.data)){
-                    message.content.data.forEach(async (msg) => {
-                        const senderId = msg.senderId;
-                        const senderSocket = clients.get(senderId);
-                        let newMsg = await Message.findByIdAndUpdate(msg._id, { isDelivered: true }, { new: true });
-                        
-                        //send sender ack
-                        if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
-                            senderSocket.send(JSON.stringify({
-                                type: 'DELIVERED',
-                                content: {
-                                    data: newMsg
-                                }
-                            }))
+               
+                const senderId = message.content.data.senderId;
+                const senderSocket = clients.get(senderId);
+                let newMsg = await Message.findByIdAndUpdate(message.content.data._id, { isDelivered: true }, { new: true });
+                
+                //send sender ack
+                if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
+                    senderSocket.send(JSON.stringify({
+                        type: 'msg_delivered',
+                        content: {
+                            data: newMsg
                         }
-                    })
+                    }))
                 }
             }
 
@@ -71,7 +68,7 @@ export const setupWebSocketServer = (server) => {
                         const senderSocket = clients.get(message.content.senderId);
                         if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
                             senderSocket.send(JSON.stringify({
-                                type: "SEEN",
+                                type: "message_seen",
                                 content: {
                                     data: message.content.data,
 
