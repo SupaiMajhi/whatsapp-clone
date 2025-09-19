@@ -60,6 +60,10 @@
         @apply text-[0.8rem] font-medium text-neutral-400;
     }
 
+    .message-text{
+        @apply text-[0.7rem] font-medium text-white;
+    }
+
     .flex-box{
         @apply w-full flex justify-center items-center gap-8; 
     }
@@ -97,5 +101,4 @@
     .left-side-container{
         @apply w-full h-full py-3 px-5 flex flex-col;
     }
-
 }

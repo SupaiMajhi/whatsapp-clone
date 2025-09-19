@@ -60,33 +60,25 @@ export const setupWebSocketServer = (server) => {
                         }
                     })
                 }
-                else{
-                    let changedMsg = await Message.findByIdAndUpdate(message.content.data._id, { isDelivered: true }, { new: true });
-                    let senderSocket = clients.get(changedMsg.senderId.toHexString());
-
-                    if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
-                        senderSocket.send(JSON.stringify({
-                            type: 'DELIVERED',
-                            content: {
-                                data: changedMsg
-                            }
-                        }));
-                    }
-                }
             }
 
             if(message.type === 'markAsSeen'){
                 //update the status of the message
-                await Message.updateMany({ _id: { $in: message.content.data }}, { $set: { isSeen: true , readAt: new Date() }});
-                //send the ack to sender
-                const senderSocket = clients.get(message.content.senderId);
-                if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
-                    senderSocket.send(JSON.stringify({
-                        type: "SEEN",
-                        content: {
-                            data: message.content.data
+                if(Array.isArray(message.content.data)){
+                    message.content.data.forEach( async() => {
+                        await Message.updateMany({ _id: { $in: message.content.data }}, { $set: { isSeen: true , readAt: new Date() }});
+                        //send the ack to sender
+                        const senderSocket = clients.get(message.content.senderId);
+                        if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
+                            senderSocket.send(JSON.stringify({
+                                type: "SEEN",
+                                content: {
+                                    data: message.content.data,
+
+                                }
+                            }))
                         }
-                    }))
+                    })
                 }
             }
         })

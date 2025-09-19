@@ -11,7 +11,9 @@ const ChatBox = ({ chatPartner, messages, setMessages, scrollRef, socket, isTypi
   const PrevChats = useMessageStore((state) => state.PrevChats);
   
   useEffect(() => {
-    setMessages(PrevChats);
+    if(PrevChats && PrevChats.length > 0){
+      setMessages(PrevChats);
+    }
   }, [ PrevChats ])
 
   return (

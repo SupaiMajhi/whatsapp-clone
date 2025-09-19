@@ -23,6 +23,7 @@ const useMessageStore = create((set) => ({
 
     getPrevChats: async (chatPartnerId) => {
         try {
+          console.log('called')
           set({ isLoading: true });
           const response = await axios.get(
             `${import.meta.env.VITE_BASE_URL}/message/get-all-message/${chatPartnerId}`,

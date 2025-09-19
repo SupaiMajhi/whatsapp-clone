@@ -46,6 +46,15 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
         setIsTyping(true);
         //todo: isTyping is never false again, so typing effect will be shown forever. for now it will false when msg will be send, but there is a problem if suppose msg never sent then the typing effect will be shown forever.
       }
+
+      if(message.type === 'DELIVERED'){
+        setMessages((prev) => prev.map((msg) => msg._id === message.content.data._id ? { ...msg, isDelivered: message.content.data.isDelivered } : msg));
+      }
+
+      if(message.type === 'SEEN'){
+        const data = message.content.data;
+        setMessages((prev) => prev.map((msg) => data.some(d => d === msg._id) ? { ...msg, isSeen: true } : msg));
+      }
     }
 
     setSocket(connection);
