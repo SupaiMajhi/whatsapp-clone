@@ -19,9 +19,16 @@ const messageSchema = new Schema({
         type: Boolean,
         default: true,
     },
+    sentAt: {
+        type: Date,
+        default: Date.now(),
+    },
     isDelivered: {
         type: Boolean,
         default: false
+    },
+    deliveredAt: {
+        type: Date,
     },
     isSeen: {
         type: Boolean,

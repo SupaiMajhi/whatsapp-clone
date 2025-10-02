@@ -54,7 +54,6 @@ export const sendMessageToSockets = (senderId, receiverId, msg) => {
     const receiverSocket = clients.get(receiverId.toHexString());
     
     if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
-        console.log('here1')
         senderSocket.send(JSON.stringify({
             type: 'NEW_MSG',
             content: {
@@ -64,7 +63,6 @@ export const sendMessageToSockets = (senderId, receiverId, msg) => {
     }
 
     if(receiverSocket && receiverSocket.readyState === WebSocket.OPEN){
-        console.log('here2')
         receiverSocket.send(JSON.stringify({
             type: 'NEW_MSG',
             content: {

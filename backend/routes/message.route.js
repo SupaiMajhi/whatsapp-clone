@@ -5,12 +5,17 @@ import { sendMsgHandler, deleteMsgHandler, updateMsgHandler, getAllMsgHandler, g
 const router = Router();
 //send message
 router.post('/send-message/:receiverId', sendMsgHandler);
+
 //delete message
 router.delete('/delete-message/:id', deleteMsgHandler);
+
 //update message
 router.patch('/update-message/:id', updateMsgHandler);
+
 //get all message
 router.get('/get-all-message/:receiverId', getAllMsgHandler);
-//get prev message chat list
+
+//get all prev message as chat list
 router.get('/get-all-chatList', getChatListHandler);
+
 export default router;

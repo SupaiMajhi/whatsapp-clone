@@ -1,9 +1,9 @@
 import Navigation from "../components/Navigation";
 import { Outlet } from "react-router-dom";
+import { useEffect } from "react";
 
 //store
 import useMessageStore from "../store/useMessageStore.js";
-import { useEffect } from "react";
 
 const HomeLayout = () => {
 

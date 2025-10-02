@@ -1,8 +1,7 @@
 import { WebSocket, WebSocketServer } from "ws";
 import { retrieveIdFromReq } from "./lib/lib.js";
 import User from "./models/user.model.js";
-import { fetchUndeliveredMessages } from "./controllers/message.controller.js";
-import Message from "./models/message.model.js";
+import { getOfflineMessagesHandler } from "./controllers/message.controller.js";
 
 export const clients = new Map();
 export const onlineUser = new Map();
@@ -15,13 +14,14 @@ export const setupWebSocketServer = (server) => {
         clients.set(id, ws);
         onlineUser.set(id, ws);
 
-        //fetch all the undelivered messages
-        const messages = await fetchUndeliveredMessages(id);
-        if(messages.length > 0){
+        //everytime a user comes online, fetch all the undelivered messages
+        let offlineMessages = await getOfflineMessagesHandler(id);
+        // console.log('offline messages', offlineMessages);
+        if(offlineMessages.length > 0){
             ws.send(JSON.stringify({
                 type: 'offline_msg',
                 content: {
-                    data: messages
+                    data: offlineMessages //can be an array
                 }
             }));
         }
@@ -42,42 +42,55 @@ export const setupWebSocketServer = (server) => {
         ws.on('message', async(event) => {
             const message = JSON.parse(event);
 
-            if(message.type === 'markAsDelivered'){
-               
-                const senderId = message.content.data.senderId;
-                const senderSocket = clients.get(senderId);
-                let newMsg = await Message.findByIdAndUpdate(message.content.data._id, { isDelivered: true }, { new: true });
+            // if(message.type === 'markAsDelivered'){
                 
-                //send sender ack
-                if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
-                    senderSocket.send(JSON.stringify({
-                        type: 'msg_delivered',
-                        content: {
-                            data: newMsg
-                        }
-                    }))
-                }
-            }
+            //         const updatedMessages = [];
+                    
+            //         if(ws.id === message.content.data.receiverId){
+            //             console.log('inside fn', ws.id);
+            //             //todo: optimize the db write, for now problem is that for example for a specific user if there are multiple msg that has to update currently we are updating them one by one by which there are so many db writes going on, but optimization is if we can batch the messages for the same user then the db write will be become less
+            //             //one way to obtain that is first use updateMany and then use db.find with $in where id will be equal to the ids of data
+            //             let newMsg = await Message.findByIdAndUpdate(message.content.data._id, { isDelivered: true, deliveredAt: message.content.time }, { new :true });
+            //             updatedMessages.push(newMsg);
+            //         }
+            //         //todo: in future there will be group chat also, in which there can be multiple sender, but for now we are assuming that sender id is same for all the messages
+            //         console.log('upadatedMessages', updatedMessages);
+            //         updatedMessages.forEach((msg) => {
+            //             //todo: same here if we can optimize this also, for the same sender if we can batch all the msg and then send them to the end user
+            //             const senderSocket = clients.get(msg.senderId.toString());
+            //             if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
+            //                 senderSocket.send(JSON.stringify({
+            //                     type: 'msg_delivered',
+            //                     content: {
+            //                         data: msg
+            //                     }
+            //                 }));
+            //             }
+            //         })
+            //         //todo: figure out a logic for when sendersocket is offline
+            //     }              
 
-            if(message.type === 'markAsSeen'){
-                //update the status of the message
-                if(Array.isArray(message.content.data)){
-                    message.content.data.forEach( async() => {
-                        await Message.updateMany({ _id: { $in: message.content.data }}, { $set: { isSeen: true , readAt: new Date() }});
-                        //send the ack to sender
-                        const senderSocket = clients.get(message.content.senderId);
-                        if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
-                            senderSocket.send(JSON.stringify({
-                                type: "message_seen",
-                                content: {
-                                    data: message.content.data,
+            // if(message.type === 'markAsSeen'){
+            //     //update the status of the message
+            //     if(Array.isArray(message.content.data)){
+            //         message.content.data.forEach( async() => {
+            //             await Message.updateMany({ _id: { $in: message.content.data }}, { $set: { isSeen: true , readAt: new Date() }});
 
-                                }
-                            }))
-                        }
-                    })
-                }
-            }
+            //             //fetch the messages
+            //             const updatedMessages = await Message.find({ _id: { $in: message.content.data }}, { _id: 1, isSeen: 1, readAt: 1 });
+            //             //send the ack to sender
+            //             const senderSocket = clients.get(message.content.senderId);
+            //             if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
+            //                 senderSocket.send(JSON.stringify({
+            //                     type: "message_seen",
+            //                     content: {
+            //                         data: updatedMessages,
+            //                     }
+            //                 }))
+            //             }
+            //         })
+            //     }
+            // }
         })
 
 

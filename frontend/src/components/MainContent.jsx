@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import { IoCheckmarkSharp, IoCheckmarkDoneSharp, IoTimeOutline } from "react-icons/io5";
+import { formatDate } from "../util/util.js";
 
 const MainContent = ({ messages, chatPartner, scrollRef, isTyping, socket }) => {
 
@@ -11,13 +12,14 @@ const MainContent = ({ messages, chatPartner, scrollRef, isTyping, socket }) => 
     }
   }
 
+  //checking message visibility
   useEffect(() => {
     let messagesIds = [];
     observer.current = new IntersectionObserver((entries) => {
-      console.log(entries);
       entries.map((entry) => {
         if(entry.isIntersecting){
           messagesIds.push(entry.target.id);
+          observer.current.unobserve(entry.target);
         }
       });
       if(messagesIds.length > 0){
@@ -30,6 +32,10 @@ const MainContent = ({ messages, chatPartner, scrollRef, isTyping, socket }) => 
         }))
       }
     }, { threshold: 1.0 })
+
+    return () => {
+      observer.current.disconnect();
+    }
   }, [])
 
   return (
@@ -57,7 +63,7 @@ const MainContent = ({ messages, chatPartner, scrollRef, isTyping, socket }) => 
             <div className="flex gap-2 chat-bubble message-text bg-green-900">
               {message.content}
               <div className="flex justify-center items-center gap-1 mt-[6px]">
-                <span className="text-[0.6rem] text-gray-400">2.30 pm</span>
+                <span className="text-[0.6rem] text-gray-400">{formatDate(message.readAt)}</span>
                 <span>
                   {
                     !message.isSent ? (

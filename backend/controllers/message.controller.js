@@ -128,9 +128,47 @@ export const getChatListHandler = async (req, res) => {
 }
 
 
-export const fetchUndeliveredMessages = async (id) => {
+export const getOfflineMessagesHandler = async (id) => {
     try {
-        const messages = await Message.find({ $and: [ { receiverId: id }, { isDelivered: false }]});
+        const messages = await Message.aggregate([
+            {
+                $match: {
+                    $and: [
+                        { receiverId: mongoose.Types.ObjectId.createFromHexString(id)},
+                        { isDelivered: false }
+                    ]
+                }
+            },
+            {
+                $sort: {createdAt: -1}
+            },
+            {
+                $group: {
+                    _id: '$senderId',
+                    message: { $first: '$$ROOT' }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'otherUser'
+                }
+            },
+            {
+                $unwind: '$otherUser'
+            },
+            {
+                $project: {
+                    message: 1,
+                    'otherUser._id': 1,
+                    'otherUser.username': 1,
+                    'otherUser.profilePic': 1
+                }
+            }
+        ]);
+        console.log('messages', messages)
         return messages;
     } catch (error) {
         console.log("fetchUndeliveredMessages Error", error.message);
