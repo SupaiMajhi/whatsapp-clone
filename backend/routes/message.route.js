@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { sendMsgHandler, deleteMsgHandler, updateMsgHandler, getAllMsgHandler, getChatListHandler } from "../controllers/message.controller.js";
+import { sendMsgHandler, deleteMsgHandler, updateMsgHandler, getAllMsgHandler, getChatListHandler, getOfflineMessagesHandler } from "../controllers/message.controller.js";
 
 
 const router = Router();
@@ -17,5 +17,7 @@ router.get('/get-all-message/:receiverId', getAllMsgHandler);
 
 //get all prev message as chat list
 router.get('/get-all-chatList', getChatListHandler);
+
+router.get('/get-all-offlineMessages', getOfflineMessagesHandler);
 
 export default router;

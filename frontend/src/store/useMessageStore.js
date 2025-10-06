@@ -55,32 +55,35 @@ const useMessageStore = create((set) => ({
     },
 
     updatePrevChatList: (newdata) => {
+      //newdata is an array
       set((state) => {
         let updated = [...state.prevChatList];
 
         //check for each new data
         newdata.forEach((d) => {
-          const senderId = d.message.senderId;
-          const receiverId = d.message.receiverId;
+          d.message.forEach((msg) => {
+            const senderId = msg.senderId;
+            const receiverId = msg.receiverId;
 
-          const existingChat = updated.find((chat) => (chat.otherUser._id === senderId) || (chat.otherUser._id === receiverId));
-
-          //if present in prevchatlist then replace the lastMessage for that user
-          if(existingChat) {
-            if(new Date(d.message.createdAt) > new Date(existingChat.lastMessage.createdAt)){
-              updated = updated.map((c) => c.otherUser._id === senderId || c.otherUser._id === receiverId ? {...c, lastMessage: d.message} : c);
-            }
-          } else {
+            //todo: this might throw some error, check it later
+            const existingChat = updated.find((chat) => (chat.otherUser._id === senderId) || (chat.otherUser._id === receiverId));
+            //if present in prevchatlist then replace the lastMessage for that user
+            if(existingChat) {
+              if(new Date(msg.createdAt) > new Date(existingChat.lastMessage.createdAt)){
+                updated = updated.map((c) => c.otherUser._id === senderId || c.otherUser._id === receiverId ? {...c, lastMessage: msg} : c);
+              }
+            } else {
             //else create a new prevhchatlist
             updated.push({
               _id: {
                 senderId,
                 receiverId
               },
-              lastMessage: d.message,
+              lastMessage: msg,
               otherUser: d.otherUser
             });
           }
+          })
         });
 
         updated.sort((a, b) => new Date(b.lastMessage.createdAt) - new Date(a.lastMessage.createdAt));

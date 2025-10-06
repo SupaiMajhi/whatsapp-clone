@@ -47,7 +47,17 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
       }
 
       if(message.type === 'offline_msg'){
+        //message.content.data is an array
         updatePrevChatList(message.content.data);
+        const messages = [];
+        message.content.data.forEach((d) => d.message.forEach((m) => messages.push(m)));
+        connection.send(JSON.stringify({
+          type: 'markAsDelivered',
+          content: {
+            data: messages, //this is an array
+            time: Date.now()
+          }
+        }))
         //todo: send ack to the servr that offline msges have successfully delivered to the user and make the appropriate changes to the server and back to the user UI. 
       }
 
@@ -56,10 +66,10 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
         //todo: isTyping is never false again, so typing effect will be shown forever. for now it will false when msg will be send, but there is a problem if suppose msg never sent then the typing effect will be shown forever.
       }
 
-      // if(message.type === 'msg_delivered'){
-      //   console.log(message.content.data)
-      //   setMessages((prev) => prev.map((msg) => msg._id === message.content.data._id ? { ...msg, isDelivered: message.content.data.isDelivered } : msg));
-      // }
+      if(message.type === 'msg_delivered'){
+        console.log(message.content.data)
+        setMessages((prev) => prev.map((msg) => msg._id === message.content.data._id ? { ...msg, isDelivered: message.content.data.isDelivered } : msg));
+      }
 
       // if(message.type === 'message_seen'){
       //   const data = message.content.data;

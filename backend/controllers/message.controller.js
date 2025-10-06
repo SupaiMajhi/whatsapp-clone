@@ -134,7 +134,7 @@ export const getOfflineMessagesHandler = async (id) => {
             {
                 $match: {
                     $and: [
-                        { receiverId: mongoose.Types.ObjectId.createFromHexString(id)},
+                        {receiverId: mongoose.Types.ObjectId.createFromHexString(id)},
                         { isDelivered: false }
                     ]
                 }
@@ -145,7 +145,8 @@ export const getOfflineMessagesHandler = async (id) => {
             {
                 $group: {
                     _id: '$senderId',
-                    message: { $first: '$$ROOT' }
+                    //:problem is here its only sending the one message that is the first coming out after the sort
+                    message: {$push: '$$ROOT'}
                 }
             },
             {
@@ -168,7 +169,6 @@ export const getOfflineMessagesHandler = async (id) => {
                 }
             }
         ]);
-        console.log('messages', messages)
         return messages;
     } catch (error) {
         console.log("fetchUndeliveredMessages Error", error.message);
