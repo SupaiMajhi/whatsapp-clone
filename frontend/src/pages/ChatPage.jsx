@@ -71,13 +71,13 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
         setMessages((prev) => prev.map((msg) => msg._id === message.content.data._id ? {...msg, isDelivered: message.content.data.isDelivered, deliveredAt: message.content.data.deliveredAt} : msg));
       }
 
-      // if(message.type === 'message_seen'){
-      //   const data = message.content.data;
-      //   setMessages((prev) => prev.map((msg) => {
-      //     const updated = data.find((d) => d._id === msg._id);
-      //     return updated ? { ...msg, isSeen: updated.isSeen, readAt: updated.readAt} : msg;
-      //   }));
-      // }
+      if(message.type === 'message_seen'){
+        const data = message.content.data;
+        setMessages((prev) => prev.map((msg) => {
+          const updated = data.find((d) => d._id === msg._id);
+          return updated ? { ...msg, isSeen: updated.isSeen, readAt: updated.readAt} : msg;
+        }));
+      }
     }
 
     setSocket(connection);

@@ -70,7 +70,6 @@ export const setupWebSocketServer = (server) => {
                 console.log(updatedMessages);
                 updatedMessages.forEach((msg) => {
                     const senderSocket = clients.get(msg.senderId.toString());
-                    console.log(senderSocket);
 
                     if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
                         senderSocket.send(JSON.stringify({
@@ -84,27 +83,27 @@ export const setupWebSocketServer = (server) => {
                 })
             }          
 
-            // if(message.type === 'markAsSeen'){
-            //     //update the status of the message
-            //     if(Array.isArray(message.content.data)){
-            //         message.content.data.forEach( async() => {
-            //             await Message.updateMany({ _id: { $in: message.content.data }}, { $set: { isSeen: true , readAt: new Date() }});
+            if(message.type === 'markAsSeen'){
+                //update the status of the message
+                if(Array.isArray(message.content.data)){
+                    
+                        await Message.updateMany({ _id: { $in: message.content.data }}, { $set: { isSeen: true , readAt: new Date() }});
 
-            //             //fetch the messages
-            //             const updatedMessages = await Message.find({ _id: { $in: message.content.data }}, { _id: 1, isSeen: 1, readAt: 1 });
-            //             //send the ack to sender
-            //             const senderSocket = clients.get(message.content.senderId);
-            //             if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
-            //                 senderSocket.send(JSON.stringify({
-            //                     type: "message_seen",
-            //                     content: {
-            //                         data: updatedMessages,
-            //                     }
-            //                 }))
-            //             }
-            //         })
-            //     }
-            // }
+                        //fetch the messages
+                        const updatedMessages = await Message.find({ _id: { $in: message.content.data }}, { _id: 1, isSeen: 1, readAt: 1 });
+                        //send the ack to sender
+                        const senderSocket = clients.get(message.content.senderId);
+                        console.log(senderSocket)
+                        if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
+                            senderSocket.send(JSON.stringify({
+                                type: "message_seen",
+                                content: {
+                                    data: updatedMessages,
+                                }
+                            }))
+                        }
+                }
+            }
         })
 
 

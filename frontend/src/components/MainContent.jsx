@@ -64,15 +64,15 @@ const MainContent = ({ messages, chatPartner, scrollRef, isTyping, socket }) => 
               {message.content}
               <div className="flex justify-center items-center gap-1 mt-[6px]">
                 {
-                  message.isSent ? (
-                  <span className="text-[0.6rem] text-gray-400">{formatDate(message.createdAt)}</span>
-                  ) : message.isDelivered ? (
-                    <span className="text-[0.6rem] text-gray-400">{formatDate(message.deliveredAt)}</span>
+                  !message.isSent ? (
+                    <span className="text-[0.5rem] text-gray-300"></span>
+                  ) : !message.isDelivered ? (
+                    <span className="text-[0.5rem] text-gray-300">{formatDate(message.createdAt)}</span>
                   ) : message.isSeen ? (
-                    <span className="text-[0.6rem] text-gray-400">{formatDate(message.readAt)}</span>
+                    <span className="text-[0.5rem] text-gray-300">{formatDate(message.readAt)}</span>
                   ) : (
-                    <span className="text-[0.6rem] text-gray-400"></span>
-                  )  
+                    <span className="text-[0.5rem] text-gray-300">{formatDate(message.deliveredAt)}</span>
+                  )
                 }
                 <span>
                   {
