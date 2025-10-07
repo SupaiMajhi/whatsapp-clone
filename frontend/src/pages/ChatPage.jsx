@@ -67,8 +67,8 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, setChatPartner, chatPartn
       }
 
       if(message.type === 'msg_delivered'){
-        console.log(message.content.data)
-        setMessages((prev) => prev.map((msg) => msg._id === message.content.data._id ? { ...msg, isDelivered: message.content.data.isDelivered } : msg));
+        console.log('msg_delivered', message.content.data)
+        setMessages((prev) => prev.map((msg) => msg._id === message.content.data._id ? {...msg, isDelivered: message.content.data.isDelivered, deliveredAt: message.content.data.deliveredAt} : msg));
       }
 
       // if(message.type === 'message_seen'){

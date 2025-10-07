@@ -43,18 +43,46 @@ export const setupWebSocketServer = (server) => {
             const message = JSON.parse(event);
 
             if(message.type === 'markAsDelivered'){
-
-                
-                            //todo: optimize the db write, for now problem is that for example for a specific user if there are multiple msg that has to update currently we are updating them one by one by which there are so many db writes going on, but optimization is if we can batch the messages for the same user then the db write will be become less
-                            //one way to obtain that is first use updateMany and then use db.find with $in where id will be equal to the ids of data
-                            
-
-                //todo: in future there will be group chat also, in which there can be multiple sender, but for now we are assuming that sender id is same for all the messages
+                const updatedMessages = [];
+                //if content.data is an array
+                if(Array.isArray(message.content.data)){
+                    for(const msg of message.content.data){
+                        //check for ack is coming from receiverId
+                        if(ws.id === msg.receiverId){
+                             //todo: optimize the db write, for now problem is that for example for a specific user if there are multiple msg that has to update, currently we are updating them one by one by which there are so many db writes going on, but optimization is if we can batch the messages for the same user then the db write will be become less
+                            //one way to obtain this is first use updateMany and then use db.find with $in where id will be equal to the ids of data
+                            let newMsg = await Message.findByIdAndUpdate(msg._id, {isDelivered: true, deliveredAt: message.content.time}, {new: true});
+                            updatedMessages.push(newMsg);
+                        }
+                    }
+                }
+                //else if not an array
+                else{
+                    if(ws.id === message.content.data.receiverId){
+                        let newMsg = await Message.findByIdAndUpdate(message.content.data._id, {isDelivered: true, deliveredAt: message.content.time}, {new: true});
+                        updatedMessages.push(newMsg);
+                    }
+                }
                
-                    //todo: same here if we can optimize this also, for the same sender if we can batch all the msg and then send them to the end user
-                    
+                
+                //todo: in future there will be group chat also, in which there can be multiple sender, but for now we are assuming that sender id is same for all the messages                    
+                //todo: same here if we can optimize this also, for the same sender if we can batch all the msg and then send them to the end user
+                console.log(updatedMessages);
+                updatedMessages.forEach((msg) => {
+                    const senderSocket = clients.get(msg.senderId.toString());
+                    console.log(senderSocket);
+
+                    if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
+                        senderSocket.send(JSON.stringify({
+                            type: 'msg_delivered',
+                            content: {
+                                data: msg
+                            }
+                        }));
+                    }
                 //todo: figure out a logic for when sendersocket is offline
-            }              
+                })
+            }          
 
             // if(message.type === 'markAsSeen'){
             //     //update the status of the message
