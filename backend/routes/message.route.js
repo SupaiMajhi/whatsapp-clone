@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { sendMsgHandler, deleteMsgHandler, updateMsgHandler, getAllMsgHandler, getChatListHandler, getOfflineMessagesHandler } from "../controllers/message.controller.js";
-
+import upload from '../multer.js';
+import verifyFileTypes from "../middleware/verifyFileTypes.js";
 
 const router = Router();
 //send message
-router.post('/send-message/:receiverId', sendMsgHandler);
+router.post('/send-message/:receiverId', upload.array('gallery'), verifyFileTypes, sendMsgHandler);
 
 //delete message
 router.delete('/delete-message/:id', deleteMsgHandler);

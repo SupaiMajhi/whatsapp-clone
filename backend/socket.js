@@ -104,6 +104,18 @@ export const setupWebSocketServer = (server) => {
                         }
                 }
             }
+
+            if(message.type === 'typing'){
+                const senderId = ws.id;
+                const receiverId = message.content.receiverId;
+                const receiverSocket = onlineUser.get(receiverId);
+                if(receiverId && receiverId.readyState === WebSocket.OPEN){
+                    receiverSocket.send(JSON.stringify({
+                        type: 'typing',
+                        whoIsTyping: senderId
+                    }))
+                }
+            }
         })
 
 

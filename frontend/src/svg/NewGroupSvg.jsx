@@ -3,8 +3,6 @@ const NewGroupSvg = (props) => {
   return (
     <svg
       viewBox="0 0 24 24"
-      height={24}
-      width={24}
       preserveAspectRatio="xMidYMid meet"
       className="xh8yej3 x5yr21d"
       fill="none"

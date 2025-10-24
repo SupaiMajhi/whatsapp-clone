@@ -10,46 +10,56 @@ import useMessageStore from "../store/useMessageStore.js";
 import useUserStore from "../store/useUserStore.js";
 import { useState } from "react";
 import NewChat from "./NewChat.jsx";
+import DropDownMenu from "./DropDownMenu.jsx";
 
 const ChatLeftSide = ({ setIsChatSelected, setChatPartner }) => {
 
-  const [isDotsClicked, setIsDotsClicked] = useState(false);
+  const [IsNewChatClicked, setIsNewChatClicked] = useState(false);
+  const [isThreeDotsClicked, setIsThreeDotsClicked] = useState(false);
 
   const prevChatList = useMessageStore((state) => state.prevChatList);
   const getAllUsers = useUserStore((state) => state.getAllUsers);
 
   const handleOnClick = () => {
     getAllUsers();
-    setIsDotsClicked(true);
+    setIsNewChatClicked(true);
   }
 
 
   return (
-    <div className="w-full h-full flex flex-col relative overflow-hidden">
+    <div className="w-full h-full flex flex-col relative z-20">
       <NewChat
-        isDotsClicked={isDotsClicked}
-        setIsDotsClicked={setIsDotsClicked}
+        IsNewChatClicked={IsNewChatClicked}
+        setIsNewChatClicked={setIsNewChatClicked}
         setIsChatSelected={setIsChatSelected}
         setChatPartner={setChatPartner}
       />
-      <div className={`${isDotsClicked ? 'hidden' : 'hidden-none'}`}>
+      <div className={`${IsNewChatClicked ? 'hidden' : 'hidden-none'}`}>
         <div className="sticky p-3">
           <div className="w-full flex justify-between items-center">
             <div>
               <LogoSvg />
             </div>
             <div className="flex justify-center items-center gap-4">
-              <Button
-                className="hover-effect hover:rounded-full"
-                handleOnClick={handleOnClick}
-              >
-                <NewChatSvg />
-              </Button>
-              <Button 
-                className="hover-effect hover:rounded-full"
-              >
-                <MenuSvg />
-              </Button>
+              <div className="relative">
+                <Button
+                  className="hover-effect hover:rounded-full"
+                  handleOnClick={handleOnClick}
+                >
+                  <NewChatSvg />
+                </Button>
+              </div>
+              <div className="relative z-30">
+                <Button 
+                  className="hover-effect hover:rounded-full"
+                  handleOnClick={() => setIsThreeDotsClicked(!isThreeDotsClicked)}
+                >
+                  <MenuSvg />
+                </Button>
+                {isThreeDotsClicked && (
+                  <DropDownMenu />
+                )}
+              </div>
             </div>
           </div>
 

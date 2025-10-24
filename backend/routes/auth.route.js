@@ -1,6 +1,8 @@
 import { Router } from "express";
-import { sendOtpHandler, loginHandler, signupHandler, checkAuthHandler } from "../controllers/auth.controller.js";
+import { sendOtpHandler, loginHandler, signupHandler, checkAuthHandler, avatarUploadHandler } from "../controllers/auth.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
+import upload from "../multer.js";
+import verifyFileTypes from "../middleware/verifyFileTypes.js";
 
 const router = Router();
 
@@ -11,4 +13,7 @@ router.post('/login', loginHandler);
 router.post('/signup', signupHandler);
 
 router.get('/check-auth', authMiddleware, checkAuthHandler)
+
+router.post('/upload-profile', authMiddleware, upload.single('avatar'), verifyFileTypes, avatarUploadHandler);
+
 export default router;

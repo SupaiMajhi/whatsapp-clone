@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Header from "../components/Header.jsx";
 import InputBox from "../components/InputBox.jsx";
 import MainContent from "../components/MainContent.jsx";
@@ -17,7 +17,7 @@ const ChatBox = ({ chatPartner, messages, setMessages, scrollRef, socket, isTypi
   }, [ PrevChats ])
 
   return (
-    <div className="relative w-full h-full flex flex-col justify-start items-center">
+    <div className="relative z-20 w-full h-full flex flex-col justify-start items-center">
       <div className="sticky top-0 w-full h-[calc(100%-90%)] bg-customBlack">
         <Header chatPartner={chatPartner} />
       </div>

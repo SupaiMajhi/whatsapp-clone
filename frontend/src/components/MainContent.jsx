@@ -91,7 +91,7 @@ const MainContent = ({ messages, chatPartner, scrollRef, isTyping, socket }) => 
             </div>
           </div>
         )
-      )}
+      )}  
     </div>
   );
 }

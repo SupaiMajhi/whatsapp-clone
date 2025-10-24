@@ -1,17 +1,25 @@
 import mongoose from "mongoose";
 import { errorResponse, successfulResponse, sendMessageToSockets } from "../lib/lib.js";
 import Message from "../models/message.model.js";
+import { uploadImages } from "../cloudinary.js";
 
 export const sendMsgHandler = async (req, res) => {
     const senderId = req.user.id;
     const { receiverId } = req.params;
     const { content } = req.body;
-    if(!senderId || !receiverId || !content)  return errorResponse(res, 400, 'something is wrong');
+    const files = req.files;
+    const uploadResult = null;
+    if(!senderId || !receiverId || !content)  return errorResponse(res, 400, 'something went wrong');
     try {
+        if(content.isMediaFileExist){
+            if(!files) return errorResponse(res, 400, 'something went wrong');
+            uploadResult = await uploadImages(files);
+        }
         const newMsg = new Message({
             senderId,
             receiverId,
-            content
+            text: content.text,
+            media: uploadResult
         });
         const savedMsg = await newMsg.save();
         if(savedMsg){
@@ -126,7 +134,6 @@ export const getChatListHandler = async (req, res) => {
         return errorResponse(res, 500, "Internal server error");
     }
 }
-
 
 export const getOfflineMessagesHandler = async (id) => {
     try {

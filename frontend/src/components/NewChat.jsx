@@ -10,7 +10,7 @@ import Avatar from "./Avatar";
 import useUserStore from "../store/useUserStore.js";
 import DefaultAvatar from "./DefaultAvatar.jsx";
 
-const NewChat = ({ isDotsClicked, setIsDotsClicked, setIsChatSelected, setChatPartner }) => {
+const NewChat = ({ IsNewChatClicked, setIsNewChatClicked, setIsChatSelected, setChatPartner }) => {
 
   const users = useUserStore((state) => state.users);
 
@@ -20,12 +20,12 @@ const NewChat = ({ isDotsClicked, setIsDotsClicked, setIsChatSelected, setChatPa
   }
 
   return (
-    <div className={`w-full h-full relative left-side-container ${ isDotsClicked ? 'hidden-none' : 'hidden' } ${ isDotsClicked ? 'animate-slideIn' : 'animate-slideOut' }`}>
+    <div className={`w-full h-full relative left-side-container ${ IsNewChatClicked ? 'hidden-none' : 'hidden' } ${ IsNewChatClicked ? 'animate-slideIn' : 'animate-slideOut' } origin-left`}>
       <div className="sticky top-0 left-0 flex flex-col mb-2">
         <div className="header flex items-center gap-5">
           <Button
             className="cursor-pointer hover-effect rounded-full"
-            handleOnClick={() => setIsDotsClicked(false)}
+            handleOnClick={() => setIsNewChatClicked(false)}
           >
             <LeftArrow />
           </Button>
