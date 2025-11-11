@@ -57,7 +57,7 @@ export const loginHandler = async (req, res) => {
       secure: false,
       sameSite: "strict",
     });
-    return successfulResponse(res, 200, "login successful.");
+    return successfulResponse(res, 200, "login successful.", alreadyExist);
   } catch (e) {
     console.log("loginHandler error", e.message);
     return errorResponse(res, 500, "Internal server error.");
@@ -120,3 +120,15 @@ export const avatarUploadHandler = async (req, res) => {
     return errorResponse(res, 500, "Internal server error.");
   }
 };
+
+export const logoutHandler = async (req, res) => {
+  try {
+    res.cookie('token', '', {
+      maxAge: 0
+    });
+    return successfulResponse(res, 200, 'Logout successfully.')
+  } catch (error) {
+    console.log(error.message);
+    return errorResponse(res, 500, 'Internal server error.');
+  }
+}

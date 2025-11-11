@@ -1,47 +1,50 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Login from "./pages/Login.jsx";
-import StatusPage from "./pages/StatusPage.jsx";
-import SettingsPage from "./pages/SettingsPage.jsx";
-import ProfilePage from "./pages/ProfilePage.jsx";
-import ChatPage from "./pages/ChatPage.jsx";
+import ChatPage from "./pages/ChatPage";
+import HomePage from "./pages/HomePage";
+import Login from "./components/Login";
+import StatusPage from "./pages/StatusPage";
+import ProfilePage from "./pages/ProfilePage";
+import SettingsPage from "./pages/SettingsPage";
 
 //store imports
-import useAuthStore from "./store/useAuthStore.js";
-import HomeLayout from "./pages/HomeLayout.jsx";
+import useAuthStore from "./store/authStore.js";
 
 function App() {
 
-  const checkAuthentication = useAuthStore((state) => state.checkAuthentication);
-  const [isChatSelected, setIsChatSelected] = useState(false);
-  const [chatPartner, setChatPartner] = useState(null);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const user = useAuthStore((state) => state.user);
+  const handleCheckAuth = useAuthStore((state) => state.handleCheckAuth);
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    if(user){
+      setIsAuthenticated(true);
+    }else{
+      setIsAuthenticated(false);
+    }
+  }, [user]);
+
   
   useEffect(() => {
-    checkAuthentication();
-  }, []);
+    handleCheckAuth();
+  }, [isAuthenticated])
 
   return (
-    <div className="flex w-screen h-screen bg-black">
+    <div className="w-screen h-screen">
+    {/** yet implement loading page */}
       <Routes>
-        <Route path="/login" element={ isAuthenticated ? <Navigate to={'/'} /> : <Login /> } />
-        
-        <Route path="/" element={ isAuthenticated ? <HomeLayout /> : <Navigate to={'/login'} /> }>
-          <Route index element={
-            <ChatPage 
-              setIsChatSelected={setIsChatSelected}
-              isChatSelected={isChatSelected}
-              setChatPartner={setChatPartner}
-              chatPartner={chatPartner}
-            />} />
-          <Route path='status' element={<StatusPage />} />
-          <Route path='settings' element={<SettingsPage />} />
-          <Route path='profile' element={<ProfilePage />} />
+        <Route path="/" element={user ? <HomePage /> : <Navigate to='/login' />} >
+          <Route index element={<ChatPage />} />
+          <Route path="status" element={<StatusPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
 
+        <Route path="/login" element={!user ? <Login setIsAuthenticated={setIsAuthenticated} /> : <Navigate to='/' />} />
       </Routes>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

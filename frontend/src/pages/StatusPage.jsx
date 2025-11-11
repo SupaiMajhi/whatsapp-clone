@@ -1,9 +1,9 @@
 import React from 'react'
 
-const Status = () => {
+const StatusPage = () => {
   return (
-    <div className='bg-amber-400'>Status</div>
+    <div>StatusPage</div>
   )
 }
 
-export default Status;
+export default StatusPage;

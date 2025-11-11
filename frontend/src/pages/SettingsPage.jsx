@@ -1,14 +1,9 @@
-import SettingsLeftSide from "../components/SettingsLeftSide";
+import React from 'react'
 
-const Settings = () => {
+const SettingsPage = () => {
   return (
-    <div className="page-container">
-      <div className="left-side">
-        <SettingsLeftSide />
-      </div>
-      <div className="right-side"></div>
-    </div>
+    <div>SettingsPage</div>
   )
 }
 
-export default Settings;
+export default SettingsPage;
