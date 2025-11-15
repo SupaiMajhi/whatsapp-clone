@@ -16,6 +16,8 @@ function App() {
   const handleCheckAuth = useAuthStore((state) => state.handleCheckAuth);
   const isLoading = useAuthStore((state) => state.isLoading);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isChatSelected, setIsChatSelected] = useState(false);
+  const [currentRcvr, setCurrentRcvr] = useState(null);
 
   useEffect(() => {
     if(user){
@@ -34,8 +36,8 @@ function App() {
     <div className="w-screen h-screen">
     {/** yet implement loading page */}
       <Routes>
-        <Route path="/" element={user ? <HomePage /> : <Navigate to='/login' />} >
-          <Route index element={<ChatPage />} />
+        <Route path="/" element={user ? <HomePage currentRcvr={currentRcvr} /> : <Navigate to='/login' />} >
+          <Route index element={<ChatPage isChatSelected={isChatSelected} setIsChatSelected={setIsChatSelected} currentRcvr={currentRcvr} setCurrentRcvr={setCurrentRcvr} />} />
           <Route path="status" element={<StatusPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="profile" element={<ProfilePage />} />

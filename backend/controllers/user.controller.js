@@ -14,14 +14,21 @@ export const getAllUsersHandler = async (req, res) => {
     }
 }
 
+export const setUserStatus = async (id) => {
+    try {
+        const res = await User.findByIdAndUpdate(id, { isOnline: true }, { new:true });
+        return res.isOnline;
+    } catch (error) {
+        console.log("setUserStatus error", error.message);
+        return;
+    }
+}
+
 export const getUserStatus = async (req, res) => {
     const { userId } = req.params;
     try {
-        if(onlineUser.has(userId)){
-            return successfulResponse(res, 200, 'successful', { isOnline: true });
-        }
-        const { lastSeen } = await User.findById(userId);
-        return successfulResponse(res, 200, 'successful', { isOnline: false, lastSeen });
+        const response = await User.findById(userId).select('isOnline').select('lastSeen');
+        return successfulResponse(res, 200, 'retrieve successfully.', response);
     } catch (error) {
         console.log('getAllUsersHandler Error', error.message);
         return errorResponse(res, 500, 'Internal server error');

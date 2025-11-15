@@ -1,2 +1,3 @@
 //in card define a method isChatOpen, depend on which detail chat component will be rendered
 //make a loading screen for when user logged in and all previous data is being load
+//for now everytime messages get fetched whenever user clicked on a particular chatList, this is not optimize at all, we have to chached the chats or some kind of that so that we don't have to fetch messages everytime user clicked on the chatList

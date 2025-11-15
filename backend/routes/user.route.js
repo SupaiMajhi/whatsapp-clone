@@ -5,6 +5,6 @@ const router = Router();
 
 router.get('/get-all-users', getAllUsersHandler);
 
-router.get('/status/:userId', getUserStatus)
+router.get('/get-status/:userId', getUserStatus)
 
 export default router;

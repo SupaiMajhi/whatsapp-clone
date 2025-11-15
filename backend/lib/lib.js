@@ -72,3 +72,16 @@ export const sendMessageToSockets = (senderId, receiverId, msg) => {
     }
     return;
 }
+
+export const populateToAllUsers = (wClients, type, content, id) => {
+    wClients.forEach((client) => {
+        if (client.id !== id && client.readyState === WebSocket.OPEN) {
+            client.send(
+                JSON.stringify({
+                type,
+                content,
+                })
+            );
+        }
+    })
+}

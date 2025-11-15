@@ -6,20 +6,13 @@ import { uploadImages } from "../cloudinary.js";
 export const sendMsgHandler = async (req, res) => {
     const senderId = req.user.id;
     const { receiverId } = req.params;
-    const { content } = req.body;
-    const files = req.files;
-    const uploadResult = null;
-    if(!senderId || !receiverId || !content)  return errorResponse(res, 400, 'something went wrong');
+    const { text } = req.body;
+    if(!senderId || !receiverId)  return errorResponse(res, 400, 'something went wrong');
     try {
-        if(content.isMediaFileExist){
-            if(!files) return errorResponse(res, 400, 'something went wrong');
-            uploadResult = await uploadImages(files);
-        }
         const newMsg = new Message({
             senderId,
             receiverId,
-            text: content.text,
-            media: uploadResult
+            text
         });
         const savedMsg = await newMsg.save();
         if(savedMsg){

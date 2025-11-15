@@ -1,8 +1,9 @@
 import { WebSocket, WebSocketServer } from "ws";
-import { retrieveIdFromReq } from "./lib/lib.js";
+import { retrieveIdFromReq, populateToAllUsers } from "./lib/lib.js";
 import User from "./models/user.model.js";
 import Message from "./models/message.model.js";
 import { getOfflineMessagesHandler } from "./controllers/message.controller.js";
+import { setUserStatus } from "./controllers/user.controller.js";
 
 export const clients = new Map();
 export const onlineUser = new Map();
@@ -13,8 +14,9 @@ export const setupWebSocketServer = (server) => {
         const id = await retrieveIdFromReq(req);
         ws.id = id;
         clients.set(id, ws);
-        onlineUser.set(id, ws);
-
+        const response = await setUserStatus(ws.id);
+        populateToAllUsers(wss.clients, 'STATUS', { isOnline:response }, ws.id);
+        
         //everytime a user comes online, fetch all the undelivered messages
         const offlineMessages = await getOfflineMessagesHandler(id);
         if(offlineMessages.length > 0){
@@ -25,19 +27,6 @@ export const setupWebSocketServer = (server) => {
                 }
             }));
         }
-
-        //send when user comes online
-        wss.clients.forEach((ws) => {
-            if(ws.readyState === WebSocket.OPEN){
-                ws.send(JSON.stringify({
-                    type: 'USER_ONLINE',
-                    content: {
-                        isOnline: onlineUser.has(id)
-                    }
-                }))
-            }
-        })
-
 
         ws.on('message', async(event) => {
             const message = JSON.parse(event);
@@ -67,7 +56,6 @@ export const setupWebSocketServer = (server) => {
                 
                 //todo: in future there will be group chat also, in which there can be multiple sender, but for now we are assuming that sender id is same for all the messages                    
                 //todo: same here if we can optimize this also, for the same sender if we can batch all the msg and then send them to the end user
-                console.log(updatedMessages);
                 updatedMessages.forEach((msg) => {
                     const senderSocket = clients.get(msg.senderId.toString());
 
@@ -93,7 +81,6 @@ export const setupWebSocketServer = (server) => {
                         const updatedMessages = await Message.find({ _id: { $in: message.content.data }}, { _id: 1, isSeen: 1, readAt: 1 });
                         //send the ack to sender
                         const senderSocket = clients.get(message.content.senderId);
-                        console.log(senderSocket)
                         if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
                             senderSocket.send(JSON.stringify({
                                 type: "message_seen",
@@ -120,19 +107,9 @@ export const setupWebSocketServer = (server) => {
 
 
         ws.on('close', async () => {
-                onlineUser.delete(id);
-                await User.findByIdAndUpdate(id, { lastSeen: new Date() });
-                wss.clients.forEach((ws) => {
-                if(ws.readyState === WebSocket.OPEN){
-                    ws.send(JSON.stringify({
-                        type: 'USER_OFFLINE',
-                        content: {
-                            isOnline: false,
-                            lastSeen: new Date()
-                        }
-                    }))
-                }
-            })
+            clients.delete(id);
+            const response = await User.findByIdAndUpdate(ws.id, { isOnline: false, lastSeen: new Date() }, {new:true});
+            populateToAllUsers(wss.clients, 'STATUS', {isOnline:response.isOnline, lastSeen:response.lastSeen}, ws.id);
         });
     });
 }

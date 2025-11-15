@@ -11,19 +11,8 @@ const messageSchema = new Schema({
         ref: 'User',
         required: true,
     },
-    content: {
-        type: String,
-        required: true,
-    },
     text: {
         type: String,
-    },
-    media: {
-        type: Array, //if type array creates any problem then i will think about something else
-    },
-    isTypeMedia: {
-        type: Boolean,
-        default: false,
     },
     isSent: {
         type: Boolean,

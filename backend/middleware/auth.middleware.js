@@ -4,8 +4,8 @@ import User from "../models/user.model.js";
 import cookie from 'cookie';
 
 const authMiddleware = async (req, res, next) => {
-    const { token } = cookie.parse(req.headers.cookie);
-    if(!token) return errorResponse(res, 401, 'unauthorized');
+    const { token } = cookie.parse(req.headers.cookie || '');
+    if(!token) return errorResponse(res, 401, 'Unauthorized');
     try {
         const isVerified = jwt.verify(token, process.env.JWT_SECRET_KEY);
         if (!isVerified) return errorResponse(res, 401, "unauthorized");
