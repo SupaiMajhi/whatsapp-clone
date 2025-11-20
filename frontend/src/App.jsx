@@ -9,15 +9,19 @@ import SettingsPage from "./pages/SettingsPage";
 
 //store imports
 import useAuthStore from "./store/authStore.js";
+import useUserStore from "./store/userStore.js";
 
 function App() {
 
   const user = useAuthStore((state) => state.user);
   const handleCheckAuth = useAuthStore((state) => state.handleCheckAuth);
   const isLoading = useAuthStore((state) => state.isLoading);
+  const getPrevChatList = useUserStore((state) => state.getPrevChatList);
+
+  
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isChatSelected, setIsChatSelected] = useState(false);
-  const [currentRcvr, setCurrentRcvr] = useState(null);
+  
 
   useEffect(() => {
     if(user){
@@ -30,14 +34,15 @@ function App() {
   
   useEffect(() => {
     handleCheckAuth();
+    getPrevChatList();
   }, [isAuthenticated])
 
   return (
     <div className="w-screen h-screen">
     {/** yet implement loading page */}
       <Routes>
-        <Route path="/" element={user ? <HomePage currentRcvr={currentRcvr} /> : <Navigate to='/login' />} >
-          <Route index element={<ChatPage isChatSelected={isChatSelected} setIsChatSelected={setIsChatSelected} currentRcvr={currentRcvr} setCurrentRcvr={setCurrentRcvr} />} />
+        <Route path="/" element={user ? <HomePage /> : <Navigate to='/login' />} >
+          <Route index element={<ChatPage isChatSelected={isChatSelected} setIsChatSelected={setIsChatSelected} />} />
           <Route path="status" element={<StatusPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="profile" element={<ProfilePage />} />

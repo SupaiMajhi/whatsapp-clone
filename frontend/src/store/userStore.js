@@ -4,6 +4,11 @@ import axios from "axios";
 const useUserStore = create((set) => ({
     prevChatList: [],
     userStatus: null,
+    currentRcvr: null,
+    
+    setCurrentRcvr: (value) => {
+        set({ currentRcvr: value });
+    },
 
     getPrevChatList: async () => {
         try {

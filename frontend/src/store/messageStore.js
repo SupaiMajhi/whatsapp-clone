@@ -20,9 +20,21 @@ const useMessageStore = create((set) => ({
         }
     },
 
-    updateMessage: (msg) => {
+    updateMessages: (msg) => {
         set((state) => ({ messages: [...state.messages, msg] }));
     },
+
+    onDelivered: (data) => set((state) => ({
+        messages: state.messages.map((m) => m._id === data._id ? { ...m, isDelivered:data.isDelivered, deliveredAt:data.deliveredAt } : m)
+    })),
+
+    onSeen: (data) => set((state) => {
+        const updated = state.messages.map((msg) => {
+            const found = data.find(d => d._id === msg._id);
+            return found ? {...msg, isSeen: found.isSeen, readAt: found.readAt } : msg;
+        });
+        return { messages: updated }
+    }),
 
     sendAMessage: async (receiverId, text) => {
         try {

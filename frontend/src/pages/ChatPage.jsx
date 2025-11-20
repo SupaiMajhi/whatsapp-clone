@@ -7,8 +7,10 @@ import { useState, useEffect } from "react";
 import ChatBox from "../components/ChatBox";
 import Advertise from "./Advertise";
 
-const ChatPage = ({ isChatSelected, setIsChatSelected, currentRcvr, setCurrentRcvr }) => {
+//store imports
 
+
+const ChatPage = ({ isChatSelected, setIsChatSelected }) => {
 
   return (
     <div className="relative w-full h-full flex">
@@ -32,14 +34,14 @@ const ChatPage = ({ isChatSelected, setIsChatSelected, currentRcvr, setCurrentRc
         </div>
 
         {/** CHATlIST */}
-        <div className="chat-left-container h-[530px] overflow-y-auto overflow-x-hidden px-2">
-          <ChatList setCurrentRcvr={setCurrentRcvr} setIsChatSelected={setIsChatSelected} />
+        <div className="chat-left-container h-[520px] overflow-y-auto overflow-x-hidden px-2">
+          <ChatList setIsChatSelected={setIsChatSelected} />
         </div>
       </div>
 
       {/** RIGHT SIDE */}
       <div className="right-container bg-primaryBg">
-        {isChatSelected ? <ChatBox currentRcvr={currentRcvr} /> : <Advertise />}
+        {isChatSelected ? <ChatBox /> : <Advertise />}
       </div>
     </div>
   );

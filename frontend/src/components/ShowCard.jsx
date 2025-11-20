@@ -1,12 +1,15 @@
 import Avatar from "./Avatar";
 import { validateTime } from "../lib.js";
+
+//store imports
 import useMessageStore from "../store/messageStore.js";
 import useUserStore from "../store/userStore.js";
 
-const ShowCard = ({ chatInfo, setCurrentRcvr, setIsChatSelected, isActive, setIsActive }) => {
+const ShowCard = ({ chatInfo, setIsChatSelected }) => {
 
   const fetchAllMessage = useMessageStore((state) => state.fetchAllMessage);
   const getUserStatus = useUserStore((state) => state.getUserStatus);
+  const setCurrentRcvr = useUserStore((state) => state.setCurrentRcvr)
 
   const handleOnClick = async () => {
     setCurrentRcvr(chatInfo.otherUser);

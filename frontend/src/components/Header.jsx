@@ -1,12 +1,15 @@
 import Avatar from "./Avatar";
 import MenuIcon from '../assets/MenuIcon';
 import SearchIcon from '../assets/SearchIcon';
-import useUserStore from "../store/userStore.js";
 import { validateTime } from "../lib.js";
 
-const Header = ({ currentRcvr }) => {
+//store imports
+import useUserStore from "../store/userStore.js";
+
+const Header = () => {
 
   const userStatus = useUserStore((state) => state.userStatus);
+  const currentRcvr = useUserStore((state) => state.currentRcvr);
 
   return (
     <div className="w-full min-h-14 max-h-16 flex justify-center items-center gap-3 bg-primaryBg cpadding">

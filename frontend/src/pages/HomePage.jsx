@@ -1,35 +1,23 @@
-import { useEffect, useState } from "react";
-import { data, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import useUserStore from "../store/userStore.js";
+import { useEffect } from "react";
+
+//store imports
 import useSocketStore from "../store/socketStore.js";
 
+const HomePage = () => {
 
-const HomePage = ({ currentRcvr }) => {
-
-  const getPrevChatList = useUserStore((state) => state.getPrevChatList);
-  const updateStatus = useUserStore((state) => state.updateStatus);
-  const setSocket = useSocketStore((state) => state.setSocket);
+  const socket = useSocketStore((state) => state.socket);
+  const connect = useSocketStore((state) => state.connect);
 
   useEffect(() => {
-    getPrevChatList();
-    const socket = new WebSocket(`${import.meta.env.VITE_SOCKET_URL}`);
-    setSocket(socket);
-
-    socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      
-
-      if(message.type === 'STATUS'){
-        updateStatus(message.content);
-      }
-    }
+    
+    connect();
 
     return () => {
-      socket.close();
-      setSocket(null);
-    };
-  }, []);
+      socket?.close();
+    }
+  }, [])
 
   return (
     <div className="w-screen h-screen flex">

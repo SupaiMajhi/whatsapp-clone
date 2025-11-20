@@ -30,7 +30,6 @@ export const setupWebSocketServer = (server) => {
 
         ws.on('message', async(event) => {
             const message = JSON.parse(event);
-
             if(message.type === 'markAsDelivered'){
                 const updatedMessages = [];
                 //if content.data is an array
@@ -48,6 +47,7 @@ export const setupWebSocketServer = (server) => {
                 //else if not an array
                 else{
                     if(ws.id === message.content.data.receiverId){
+                        console.log(message.content.data)
                         let newMsg = await Message.findByIdAndUpdate(message.content.data._id, {isDelivered: true, deliveredAt: message.content.time}, {new: true});
                         updatedMessages.push(newMsg);
                     }
@@ -75,20 +75,22 @@ export const setupWebSocketServer = (server) => {
                 //update the status of the message
                 if(Array.isArray(message.content.data)){
                     
-                        await Message.updateMany({ _id: { $in: message.content.data }}, { $set: { isSeen: true , readAt: new Date() }});
+                    await Message.updateMany({ _id: { $in: message.content.data }}, { $set: { isSeen: true , readAt: new Date() }});
 
-                        //fetch the messages
-                        const updatedMessages = await Message.find({ _id: { $in: message.content.data }}, { _id: 1, isSeen: 1, readAt: 1 });
-                        //send the ack to sender
-                        const senderSocket = clients.get(message.content.senderId);
+                    //fetch the messages
+                    const updatedMessages = await Message.find({ _id: { $in: message.content.data }}, { _id:1, senderId:1, isSeen:1, readAt:1 });
+                    //send the ack to sender
+                    updatedMessages.forEach((m) => {
+                        const senderSocket = clients.get(m.senderId.toString());
                         if(senderSocket && senderSocket.readyState === WebSocket.OPEN){
                             senderSocket.send(JSON.stringify({
-                                type: "message_seen",
+                                type: "msg_seen",
                                 content: {
                                     data: updatedMessages,
                                 }
                             }))
                         }
+                    })
                 }
             }
 

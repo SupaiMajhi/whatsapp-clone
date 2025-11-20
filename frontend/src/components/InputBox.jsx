@@ -3,19 +3,21 @@ import StickerIcon from "../assets/StickerIcon";
 import ArrowIcon from "../assets/ArrowIcon";
 import Button from '../components/Button';
 import { useState } from "react";
-import useMessageStore from "../store/messageStore.js";
 
-const InputBox = ({ currentRcvr }) => {
+//store imports
+import useMessageStore from "../store/messageStore.js";
+import useUserStore from "../store/userStore.js";
+
+const InputBox = () => {
 
 
   const [msgText, setMsgText] = useState('');
   const sendAMessage = useMessageStore((state) => state.sendAMessage);
-  const updateMessage = useMessageStore((state) => state.updateMessage);
+  const currentRcvr = useUserStore((state) => state.currentRcvr);
 
   const handleOnSubmit = async () => {
-    const data = await sendAMessage(currentRcvr._id, msgText);
+    await sendAMessage(currentRcvr._id, msgText);
     setMsgText('');
-    updateMessage(data);
   }
   return (
     <div className="absolute bottom-5 min-w-[calc(100%-2em)] max-w-[calc(100%-1.5em)] min-h-12 max-h-14 flex items-center gap-4 bg-secondaryClr/50 rounded-4xl pl-4 mx-auto"> 
