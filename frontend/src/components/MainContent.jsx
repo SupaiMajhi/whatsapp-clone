@@ -1,8 +1,8 @@
-import { IoCheckmarkSharp } from "react-icons/io5";
+import { IoCheckmarkSharp, IoOptions } from "react-icons/io5";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { FaRegClock } from "react-icons/fa";
 import { validateTime } from "../lib.js";
-import { useCallback, useEffect, useRef } from "react";
+import { useRef, useLayoutEffect, useCallback } from "react";
 
 //store imports
 import useAuthStore from "../store/authStore.js";
@@ -10,81 +10,74 @@ import useMessageStore from "../store/messageStore.js";
 import useSocketStore from "../store/socketStore.js";
 
 const MainContent = () => {
-
   const messages = useMessageStore((state) => state.messages);
   const user = useAuthStore((state) => state.user);
   const socket = useSocketStore((state) => state.socket);
-  const observer = useRef(null);
   const rootRef = useRef(null);
-  const messagesIds = [];
+  const observer = useRef(null);
 
-
-  const observerCallback = (entries) => {
-    entries.forEach((entry) => {
-      if(entry.isIntersecting){
-        messagesIds.push(entry.target.id);
-        observer.current.unobserve(entry.target);
+  useLayoutEffect(() => {
+    if(!rootRef.current) return;
+    observer.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            socket.send(
+              JSON.stringify({
+                type: "markAsSeen",
+                content: {
+                  data: entry.target.id,
+                },
+              })
+            );
+            observer.current.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.75,
+        root: rootRef.current,
       }
-    })
-    socket.send(JSON.stringify({
-      type: 'markAsSeen',
-      content: {
-        data: messagesIds
-      }
-    }))
-  }
-
-  useEffect(() => {
-    observer.current = new IntersectionObserver(observerCallback, {
-      root: rootRef.current,
-      threshold: 0.5
-    });
+    );
 
     return () => {
-      if(observer.current){
-        observer.current.disconnect();
-      }
-    }
-  }, [messages]);
+      observer.current.disconnect();
+    };
+  }, []);
 
-
-  const setRef = useCallback((elem) => {
-    if(elem && !messagesIds.includes(elem.target?.id)){
-      if(observer.current){
-        observer.current.observe(elem);
-      }
+  const setRef = useCallback((el) => {
+    if (el && el.getAttribute("data-isseen") === "false") {
+      observer.current.observe(el);
     }
-  }, [])
+  }, []);
 
   return (
-    <div 
+    <div
       className="w-full h-[560px] overflow-x-hidden overflow-y-auto"
       ref={rootRef}
     >
       {messages.map((message) =>
         message.senderId === user._id ? (
-          <div 
-            className="chat chat-end" 
-            key={message._id}
-            id={message._id}
-          >
+          <div className="chat chat-end" key={message._id} id={message._id}>
             <div className="chat-bubble bg-green-900 text flex justify-between items-center gap-2">
               {message.text}
               <div className="flex justify-center items-center gap-1 mt-3">
-                { message.isSeen ? (
+                {message.isSeen ? (
                   <p className="time-text">{validateTime(message.readAt)}</p>
                 ) : message.isDelivered ? (
-                  <p className="time-text">{validateTime(message.deliveredAt)}</p>
+                  <p className="time-text">
+                    {validateTime(message.deliveredAt)}
+                  </p>
                 ) : message.isSent ? (
                   <p className="time-text">{validateTime(message.createdAt)}</p>
                 ) : (
                   <p></p>
                 )}
 
-                { message.isSeen ? (
+                {message.isSeen ? (
                   <IoCheckmarkDoneSharp className="text-blue-400" />
                 ) : message.isDelivered ? (
-                <IoCheckmarkDoneSharp className="text-baseClr" />
+                  <IoCheckmarkDoneSharp className="text-baseClr" />
                 ) : message.isSent ? (
                   <IoCheckmarkSharp className="text-baseClr" />
                 ) : (
@@ -94,11 +87,12 @@ const MainContent = () => {
             </div>
           </div>
         ) : (
-          <div 
-            className="chat chat-start" 
+          <div
+            className="chat chat-start"
             key={message._id}
-            ref={(elem) => setRef(elem)}
             id={message._id}
+            ref={(el) => setRef(el)}
+            data-isseen={message.isSeen}
           >
             <div className="chat-bubble bg-secondaryClr text">
               {message.text}
@@ -108,6 +102,6 @@ const MainContent = () => {
       )}
     </div>
   );
-}
+};
 
 export default MainContent;
