@@ -16,24 +16,25 @@ const MainContent = () => {
   const rootRef = useRef(null);
   const observer = useRef(null);
 
+  const observerCallback = (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        socket.send(
+          JSON.stringify({
+            type: "markAsSeen",
+            content: {
+              data: entry.target.id,
+            },
+          })
+        );
+        observer.current.unobserve(entry.target);
+      }
+    })
+  }
+
   useLayoutEffect(() => {
     if(!rootRef.current) return;
-    observer.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            socket.send(
-              JSON.stringify({
-                type: "markAsSeen",
-                content: {
-                  data: entry.target.id,
-                },
-              })
-            );
-            observer.current.unobserve(entry.target);
-          }
-        });
-      },
+    observer.current = new IntersectionObserver(observerCallback,
       {
         threshold: 0.75,
         root: rootRef.current,
